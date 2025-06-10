@@ -1,0 +1,65 @@
+<form [formGroup]="loginForm"
+    class="flex flex-col justify-center space-y-6 p-8 rounded-xl bg-transparent shadow-lg w-3/5 mx-auto border border-white text-left">
+
+    <h2 class="text-center text-white mb-6">
+        <span class="material-icons" style="font-size: 5rem;">account_circle</span>
+    </h2>
+
+
+    <!-- Email -->
+    <div class="">
+        <label for="usernameOrEmail" class="block mb-1 text-sm font-medium text-gray-300">Email o Usuario</label>
+        <input type="usernameOrEmail" id="usernameOrEmail" formControlName="usernameOrEmail"
+            placeholder="Email o Usuario"
+            class="w-full px-4 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required />
+
+        <!-- Validaciones -->
+        <div *ngIf="loginForm.get('usernameOrEmail')?.touched && loginForm.get('usernameOrEmail')?.invalid"
+            class="mt-1 text-sm text-red-400">
+            <div *ngIf="loginForm.get('usernameOrEmail')?.errors?.['required']">El correo o usuario es
+                obligatorio.</div>
+        </div>
+    </div>
+
+    <!-- Contraseña -->
+    <div class="relative">
+        <label for="password" class="block mb-1 text-sm font-medium text-gray-300">Contraseña</label>
+        <input [type]="isPasswordVisible ? 'text' : 'password'" id="password" formControlName="password"
+            placeholder="Contraseña"
+            class="w-full px-4 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required />
+
+        <button type="button" class="absolute top-9 right-4 text-gray-400 hover:text-white focus:outline-none"
+            (click)="togglePasswordVisibility()">
+            <span class="material-icons">
+                {{ isPasswordVisible ? 'visibility_off' : 'visibility' }}
+            </span>
+        </button>
+
+        <!-- Validaciones -->
+        <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
+            class="mt-1 text-sm text-red-400">
+            <div *ngIf="loginForm.get('password')?.errors?.['required']">La contraseña es obligatoria.</div>
+            <div *ngIf="loginForm.get('password')?.errors?.['minlength']"> La contraseña debe tener al menos 8
+                caracteres.</div>
+            <div *ngIf="loginForm.get('password')?.errors?.['maxlength']"> La contraseña no puede exceder los 15
+                caracteres.</div>
+            <div *ngIf="loginForm.get('password')?.hasError('pattern')">
+                La contraseña debe poseer al menos una letra mayúscula y un número.
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón de enviar -->
+    <button (click)="login()"
+        class="w-full py-2 mt-6 text-white bg-transparent border-2 border-white rounded-lg hover:bg-white hover:text-gray-900 transition focus:outline-none focus:ring-2 focus:ring-white cursor-pointer">
+        Iniciar sesión
+    </button>
+
+    <!-- Mensaje de error o éxito -->
+    <div *ngIf="message" [ngClass]="isError ? 'bg-red-500' : 'bg-green-500'"
+        class="mt-4 text-center text-white px-4 py-2 rounded-md">
+        {{ message }}
+    </div>
+</form>

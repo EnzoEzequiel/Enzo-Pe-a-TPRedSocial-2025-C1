@@ -1,0 +1,33 @@
+<div class="flex w-screen items-center justify-around bg-gray-950 px-4">
+    <div class="w-1/2 flex justify-center">
+        <img src="assets/images/zompix.png" alt="Logo de Zompix" class="w-[30rem] h-[30rem] mb-8" />
+
+    </div>
+
+    <div class="flex flex-col justify-center bg-black/80 p-8 shadow-lg w-1/2 text-center text-gray-100">
+
+        <!-- Mostrar componente login o register -->
+        @if (isLoginVisible) {
+        <app-login />
+        } @else {
+        <app-register />
+        }
+
+        <!-- Botón para alternar -->
+        <p class="text-sm mt-6">
+            @if (isLoginVisible) {
+            ¿No tienes una cuenta?
+            <button (click)="showRegister()" class="text-blue-400 hover:underline">
+                Regístrate
+            </button>
+            } @else {
+            ¿Ya tienes una cuenta?
+            <button (click)="showLogin()" class="text-blue-400 hover:underline">
+                Inicia sesión
+            </button>
+            }
+        </p>
+
+
+    </div>
+</div>

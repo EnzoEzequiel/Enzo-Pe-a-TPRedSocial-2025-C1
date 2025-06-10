@@ -1,0 +1,17 @@
+@import "tailwindcss";
+:root {
+  --color-principal: #6aba4d;
+  --color-fondo: #f0f5f1;
+  --color-texto: #333;
+  --color-secundario: #fff;
+}
+body {
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+.btn-primary {
+  @apply bg-verde-lagarto text-white rounded-full px-4 py-2 hover:bg-opacity-90;
+}
+
+

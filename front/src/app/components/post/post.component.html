@@ -1,0 +1,33 @@
+<div class="bg-white border border-gray-200 rounded-lg mb-6 shadow-sm">
+  <div class="flex items-center p-4">
+    <img [src]="post.user.avatarUrl" class="w-10 h-10 rounded-full mr-3"/>
+    <div>
+      <p class="font-semibold">{{ post.user.name }}</p>
+      <p class="text-sm text-gray-500">{{ post.createdAt | timeAgo }}</p>
+    </div>
+  </div>
+  <div class="px-4 pb-4">
+    <p class="mb-3">{{ post.content }}</p>
+    <img *ngIf="post.image" [src]="post.image" class="w-full rounded-lg"/>
+  </div>
+  <div class="flex justify-between items-center px-4 py-2 border-t border-gray-100">
+   <!-- Botón de like -->
+    <button
+      (click)="likePost(post)"
+      [ngClass]="{
+      'text-verde-lagarto': hasUserLiked(post),
+      'text-gray-600': !hasUserLiked(post)
+      }"
+      class="flex items-center space-x-1 hover:bg-gray-100 px-2 py-1 rounded"
+      [disabled]="loading"
+    >
+      <i class="fas fa-heart"></i>
+      <span>{{ post.likes?.length || 0 }}</span>
+    </button>
+
+    <button class="flex items-center space-x-1 text-gray-600 hover:bg-gray-50 px-2 py-1 rounded">
+      <i class="fas fa-comment"></i><span>{{ post.comments }}</span>
+    </button>
+    <!-- otros botones -->
+  </div>
+</div>
