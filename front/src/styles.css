@@ -1,4 +1,16 @@
 @import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #f9fafb; /* Tailwind's bg-gray-50 */
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+/*
 :root {
   --color-principal: #6aba4d;
   --color-fondo: #f0f5f1;
@@ -9,9 +21,9 @@ body {
   background: var(--color-fondo);
   color: var(--color-texto);
   font-family: 'Helvetica Neue', Arial, sans-serif;
-}
-.btn-primary {
+} */
+/* .btn-primary {
   @apply bg-verde-lagarto text-white rounded-full px-4 py-2 hover:bg-opacity-90;
-}
+} */
 
 
