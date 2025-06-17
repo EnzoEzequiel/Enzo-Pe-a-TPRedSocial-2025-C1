@@ -1,22 +1,27 @@
-<header class="fixed top-0 inset-x-0 h-14 bg-white border-b border-gray-200 flex items-center px-4 z-20">
-  <div class="flex items-center space-x-2">
-    <img src="assets/logo.png" alt="Logo" class="h-8"/>
-    <span class="text-xl font-bold text-verde-lagarto">Zompix</span>
-  </div>
-  <div class="hidden md:flex flex-1 mx-4">
+<header class="fixed top-0 inset-x-0 h-12 bg-white border-b border-gray-300 flex items-center px-4 z-30">
+  <div class="flex items-center space-x-4">
+    <img src="assets/facebook-logo.png" alt="Logo" class="h-8" />
     <input
       type="text"
       placeholder="Buscar en Zompix"
-      class="w-full rounded-full bg-gray-100 px-4 py-1 focus:outline-none"
+      class="hidden md:block w-80 rounded-full bg-gray-100 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
   </div>
-  <nav class="flex items-center space-x-4">
-    <a routerLink="/home" class="text-gray-600 hover:text-verde-lagarto">
-      <i class="fas fa-home"></i>
+
+  <nav class="flex flex-1 justify-center space-x-6">
+    <a routerLink="/home" class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100">
+      <i class="fas fa-home text-xl text-blue-600"></i>
     </a>
-    <a routerLink="/perfil" class="text-gray-600 hover:text-verde-lagarto">
-      <i class="fas fa-user"></i>
+    <a routerLink="/profile" class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100">
+      <i class="fas fa-user-friends text-xl text-gray-600"></i>
     </a>
-    <!-- añade más iconos según necesites -->
+    <a routerLink="/notifications" class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100">
+      <i class="fas fa-bell text-xl text-gray-600"></i>
+    </a>
   </nav>
+
+  <div class="flex items-center space-x-4">
+    <img src="{{user.profileImage}}" alt="Perfil" class="w-8 h-8 rounded-full object-cover" />
+    <i class="fas fa-caret-down text-gray-600 hover:text-gray-800 cursor-pointer"></i>
+  </div>
 </header>

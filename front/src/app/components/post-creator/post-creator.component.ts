@@ -14,7 +14,7 @@ import { User } from '../../models/user.model';
 })
 export class PostCreatorComponent {
   @Output() postCreated = new EventEmitter<void>();
-  tweetText: string = '';
+  postText: string = '';
   imageFile: File | null = null;
   imagePreview: string | null = null;
   userSignal!: Signal<User | null>;
@@ -22,7 +22,6 @@ export class PostCreatorComponent {
   firstName = localStorage.getItem('firstName') || '';
   lastName = localStorage.getItem('lastName') || '';
   profileImage = localStorage.getItem('profileImage') || '';
-
 
   constructor(private postService: PostService, private authService: AuthService) {
     this.userSignal = this.authService.currentUser;
@@ -48,12 +47,12 @@ export class PostCreatorComponent {
   }
 
   async post(): Promise<void> {
-    if (!this.tweetText.trim()) {
+    if (!this.postText.trim()) {
       return;
     }
 
     const formData = new FormData();
-    formData.append('content', this.tweetText);
+    formData.append('content', this.postText);
     formData.append('username', this.username);
     formData.append('profileImage', this.profileImage);
     formData.append('firstName', this.firstName);
@@ -65,7 +64,7 @@ export class PostCreatorComponent {
 
     try {
       const response = await this.postService.createPost(formData).toPromise();
-      this.tweetText = '';
+      this.postText = '';
       this.imageFile = null;
       this.imagePreview = null;
 

@@ -1,46 +1,17 @@
-<aside class="hidden lg:block w-80 p-4 h-screen bg-gray-950 text-white flex flex-col gap-6">
-    <!-- Tendencias -->
-    <div class="bg-gray-900 rounded-xl p-4 mb-2">
-        <h2 class="font-bold text-xl mb-3">Tendencias</h2>
-        <ul class="space-y-2 text-sm text-gray-400">
-            <li>#TailwindCSS</li>
-            <li>#JavaScript</li>
-            <li>#AppZompix</li>
-            <li>#OpenAI</li>
-            <li>#Angular</li>
-            <li>#IA</li>
-        </ul>
-    </div>
-
-    <!-- A quién seguir -->
-    <div class="bg-gray-900 rounded-xl p-4 mb-2">
-        <h2 class="font-bold text-xl mb-3">Usuarios destacados</h2>
-        <ul>
-            <li *ngFor="let user of userSignal | async"
-                class="flex items-center gap-3 p-2 hover:bg-gray-800 rounded cursor-pointer">
-                <!-- Imagen de perfil -->
-                <img *ngIf="user.profileImage" [src]="user.profileImage" alt="{{ user.username }}'s profile"
-                    class="w-10 h-10 rounded-full object-cover" />
-                <div class="flex flex-col">
-                    <!-- Nombre completo -->
-                    <span class="font-semibold text-white">
-                        {{ user.firstName }} {{ user.lastName }}
-                    </span>
-                    <!-- Username -->
-                    <span class="text-gray-400 text-sm">
-                        {{ user.username }}
-                    </span>
-                </div>
-            </li>
-
-        </ul>
-    </div>
-
-    <!-- Promoción -->
-    <div class="bg-gradient-to-r from-yellow-500 via-yellow-600 to-amber-700 rounded-xl p-4 text-center shadow-lg mb-2">
-        <h3 class="text-lg font-bold mb-2">¡Proba la version Pro!</h3>
-        <p class="text-sm text-white">Accedé a estadísticas avanzadas y más funciones exclusivas.</p>
-        <button class="mt-3 bg-white text-yellow-700 font-semibold px-4 py-2 rounded-full text-sm">Activar</button>
-    </div>
-
-</aside>
+<nav class="space-y-3 text-[15px] font-medium text-[#050505]">
+  <a routerLink="/home" class="flex items-center gap-3 p-2 hover:bg-gray-200 rounded-lg">
+    <i class="fas fa-house-user text-xl text-blue-600"></i> Inicio
+  </a>
+  <a routerLink="/profile" class="flex items-center gap-3 p-2 hover:bg-gray-200 rounded-lg">
+    <i class="fas fa-user text-xl text-gray-600"></i> Perfil
+  </a>
+  <a routerLink="/friends" class="flex items-center gap-3 p-2 hover:bg-gray-200 rounded-lg">
+    <i class="fas fa-user-friends text-xl text-gray-600"></i> Amigos
+  </a>
+  <a routerLink="/groups" class="flex items-center gap-3 p-2 hover:bg-gray-200 rounded-lg">
+    <i class="fas fa-users text-xl text-gray-600"></i> Grupos
+  </a>
+  <a routerLink="/marketplace" class="flex items-center gap-3 p-2 hover:bg-gray-200 rounded-lg">
+    <i class="fas fa-store text-xl text-gray-600"></i> Marketplace
+  </a>
+</nav>

@@ -4,14 +4,15 @@ import { PostComponent } from '../../components/post/post.component';
 import { PostService } from '../../services/post/post.service';
 import { NgIf, NgFor } from '@angular/common';
 import { PostInteractionsComponent } from '../../components/post-interactions/post-interactions.component';
-
+import { SpinnerComponent } from '../../components/spinner/spinner.component';
 @Component({
   selector: 'app-home',
-  imports: [PostCreatorComponent, PostComponent, NgIf, NgFor, PostInteractionsComponent],
+  imports: [PostCreatorComponent, PostComponent, NgIf, NgFor, PostInteractionsComponent, SpinnerComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit, OnDestroy {
+  loading = false;
   posts: any[] = [];
   username = localStorage.getItem('username') || '';
   selectedPost: any = null;

@@ -1,27 +1,12 @@
-<div class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-    <div class="bg-zinc-900 text-white rounded-xl shadow-lg w-full max-w-md p-6 relative">
-
-        <!-- Botón cerrar -->
-        <button (click)="close()" class="absolute top-3 right-3 text-white text-xl hover:text-red-400">
-            ×
-        </button>
-
-        <!-- Formulario -->
-        <form (submit)="submitComment()" class="flex flex-col gap-4 mt-6">
-            <textarea [(ngModel)]="commentText" name="comment" rows="3" placeholder="Escribe tu comentario..."
-                maxlength="140"
-                class="w-full p-3 border border-gray-600 rounded-lg bg-zinc-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-
-            <p class="text-xs" [ngClass]="countCharacters(commentText) === 140 ? 'text-red-400' : 'text-gray-400'">
-                {{ countCharacters(commentText) }} / 140 caracteres
-            </p>
-
-
-            <button type="submit"
-                class="self-end px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                Comentar
-            </button>
-        </form>
-
+<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+  <div class="bg-white w-full max-w-md rounded-lg shadow-lg p-6">
+    <button (click)="close()" class="absolute top-4 right-4 text-gray-600 hover:text-gray-800">×</button>
+    <textarea [(ngModel)]="commentText" rows="3" placeholder="Escribe un comentario..."
+      class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800" maxlength="200"></textarea>
+    <div class="flex justify-between items-center mt-2">
+      <span class="text-xs text-gray-500">{{commentText.length}} / 200</span>
+      <button (click)="submitComment()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+        [disabled]="!commentText.trim()">Comentar</button>
     </div>
+  </div>
 </div>

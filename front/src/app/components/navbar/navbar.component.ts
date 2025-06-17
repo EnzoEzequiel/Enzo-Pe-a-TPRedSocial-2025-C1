@@ -17,6 +17,10 @@ export class NavbarComponent {
   lastName = localStorage.getItem('lastName') || '';
   isAdmin = localStorage.getItem('isAdmin') === 'true';
   profileImage = localStorage.getItem('profileImage') || '';
+  user = {
+    profileImage: 'https://res.cloudinary.com/dqqaf002m/image/upload/v1749215793/user_dykckk.jpg'
+    //reemplazar con datos del usuario
+  };
 
   constructor(private authService: AuthService) {
   }
