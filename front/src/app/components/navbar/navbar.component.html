@@ -1,18 +1,20 @@
 <header class="fixed top-0 left-0 right-0 h-14 bg-white border-b border-gray-300 z-50 flex items-center justify-between px-4">
   <!-- Logo e input -->
   <div class="flex items-center gap-3">
-    <img src="assets/facebook-logo.png" alt="Zompix" class="h-8" />
+    <img src="assets/images/home.png" alt="Zompix" class="h-15" />
+
     <input
       type="text"
       placeholder="Buscar en Zompix"
-      class="bg-[#f0f2f5] px-4 py-1.5 rounded-full w-72 text-sm focus:outline-none hidden md:block"
+      class="bg-gray-300 px-4 py-1.5 rounded-full w-72 text-sm text-gray-800 placeholder-gray-500 focus:outline-none hidden md:block"
     />
+
   </div>
 
   <!-- Navegación central -->
   <nav class="flex gap-6">
     <a routerLink="/home" class="relative flex items-center justify-center w-12 h-12 hover:bg-gray-100 rounded-md">
-      <i class="fas fa-house text-xl text-blue-600"></i>
+      <i class="fas fa-house text-xl text-green-600"></i>
     </a>
     <a routerLink="/friends" class="relative flex items-center justify-center w-12 h-12 hover:bg-gray-100 rounded-md">
       <i class="fas fa-user-friends text-xl text-gray-600"></i>
@@ -45,9 +47,9 @@
     </button>
     <div
       *ngIf="menuOpen"
-      class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-10">
-      <a routerLink="/profile" class="block px-4 py-2 hover:bg-gray-100 text-sm">Mi perfil</a>
-      <a (click)="logout()" class="block px-4 py-2 hover:bg-gray-100 text-sm cursor-pointer">Cerrar sesión</a>
+      class="absolute right-0 mt-2 w-48 bg-gray-50 border border-gray-200 rounded-md shadow-lg py-2 z-10">
+      <a routerLink="/profile" class="block px-4 py-2 hover:bg-gray-200 text-sm text-gray-800">Mi perfil</a>
+      <a (click)="logout()" class="block px-4 py-2 hover:bg-gray-200 text-sm text-gray-800 cursor-pointer">Cerrar sesión</a>
     </div>
   </div>
 </header>

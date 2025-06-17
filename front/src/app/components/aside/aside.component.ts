@@ -20,13 +20,14 @@ export class AsideComponent {
     {
       title: '¡Proba Zompix PRO!',
       description: 'Accedé a estadísticas exclusivas.',
-      image: 'https://via.placeholder.com/300x150',
+      // image: 'https://via.placeholder.com/300x150',
+      image: 'assets/images/premium.png',
       link: '#'
     },
     {
       title: 'Publicitá tu marca',
       description: 'Llega a más personas con Zompix Ads.',
-      image: 'https://via.placeholder.com/300x150',
+      image: 'assets/images/promote.png',
       link: '#'
     }
   ];
