@@ -1,18 +1,18 @@
 <app-navbar></app-navbar>
 
-<div class="pt-14 bg-[#f0f2f5] min-h-screen flex justify-center gap-4">
+<div class="pt-14 bg-[#f0f2f5] min-h-screen flex justify-center">
   <!-- Sidebar izquierdo -->
-  <aside class="hidden lg:block w-[320px] px-4 pt-6">
+  <aside class="hidden lg:block w-[320px] px-4">
     <app-aside></app-aside>
   </aside>
 
   <!-- Feed -->
-  <main class="flex flex-col w-full max-w-[600px] px-4 pt-6">
+  <main class="w-full max-w-[600px] px-4">
     <router-outlet></router-outlet>
   </main>
 
   <!-- Sidebar derecho -->
-  <aside class="hidden xl:block w-[320px] px-4 pt-6">
+  <aside class="hidden xl:block w-[320px] px-4">
     <app-footer></app-footer>
   </aside>
 </div>

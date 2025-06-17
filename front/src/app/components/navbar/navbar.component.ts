@@ -11,6 +11,8 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent {
+  notifCount = 3;
+  msgCount = 5;
   menuOpen = false;
   username = localStorage.getItem('username') || '';
   firstName = localStorage.getItem('firstName') || '';

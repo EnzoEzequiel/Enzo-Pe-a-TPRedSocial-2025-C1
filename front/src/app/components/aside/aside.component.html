@@ -1,17 +1,27 @@
-<nav class="space-y-3 text-[15px] font-medium text-[#050505]">
-  <a routerLink="/home" class="flex items-center gap-3 p-2 hover:bg-gray-200 rounded-lg">
-    <i class="fas fa-house-user text-xl text-blue-600"></i> Inicio
-  </a>
-  <a routerLink="/profile" class="flex items-center gap-3 p-2 hover:bg-gray-200 rounded-lg">
-    <i class="fas fa-user text-xl text-gray-600"></i> Perfil
-  </a>
-  <a routerLink="/friends" class="flex items-center gap-3 p-2 hover:bg-gray-200 rounded-lg">
-    <i class="fas fa-user-friends text-xl text-gray-600"></i> Amigos
-  </a>
-  <a routerLink="/groups" class="flex items-center gap-3 p-2 hover:bg-gray-200 rounded-lg">
-    <i class="fas fa-users text-xl text-gray-600"></i> Grupos
-  </a>
-  <a routerLink="/marketplace" class="flex items-center gap-3 p-2 hover:bg-gray-200 rounded-lg">
-    <i class="fas fa-store text-xl text-gray-600"></i> Marketplace
-  </a>
-</nav>
+<!-- Publicidad -->
+<div class="space-y-4 mb-6">
+  <h3 class="text-gray-500 text-sm font-semibold px-2">Publicidad</h3>
+  <div *ngFor="let ad of ads" class="bg-white rounded-lg shadow overflow-hidden">
+    <a [href]="ad.link" class="block">
+      <img [src]="ad.image" alt="Publicidad" class="w-full h-32 object-cover" />
+      <div class="p-3">
+        <h4 class="text-sm font-semibold text-gray-800">{{ ad.title }}</h4>
+        <p class="text-xs text-gray-500">{{ ad.description }}</p>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- Contactos -->
+<div>
+  <h3 class="text-gray-500 text-sm font-semibold px-2 mb-2">Contactos</h3>
+  <ul class="space-y-3">
+    <li *ngFor="let contact of contacts" class="flex items-center gap-3 px-2">
+      <div class="relative">
+        <img [src]="contact.avatar" class="w-8 h-8 rounded-full object-cover" />
+        <span class="absolute bottom-0 right-0 w-2 h-2 bg-green-500 rounded-full border border-white"></span>
+      </div>
+      <span class="text-sm text-gray-800">{{ contact.name }}</span>
+    </li>
+  </ul>
+</div>
