@@ -7,7 +7,7 @@ import { firstValueFrom } from 'rxjs';
 function passwordMatchValidator(form: AbstractControl) {
   const password = form.get('password')?.value;
   const confirmPassword = form.get('confirmPassword')?.value;
-  return password === confirmPassword ? null : { passwordMismatch: true };
+  return password === confirmPassword ? null : { passwordMustmatch: true };
 }
 
 function birthDateValidator(control: AbstractControl) {
@@ -36,10 +36,17 @@ export class RegisterComponent {
   isPasswordVisible: boolean = false;
   defaultImage = 'https://res.cloudinary.com/dqqaf002m/image/upload/v1749215793/user_dykckk.jpg';
 
+  minBirthDate: string = '';
+  maxBirthDate: string = '';
+
   constructor(
     private authService: AuthService,
     private fb: FormBuilder
   ) {
+    const today = new Date();
+    this.maxBirthDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate()).toISOString().split('T')[0];
+    this.minBirthDate = new Date(today.getFullYear() - 100, today.getMonth(), today.getDate()).toISOString().split('T')[0];
+
     this.registerForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]],
       lastName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]],
@@ -60,7 +67,6 @@ export class RegisterComponent {
     }, { validators: passwordMatchValidator });
   }
 
-
   togglePasswordVisibility(): void {
     this.isPasswordVisible = !this.isPasswordVisible;
   }
@@ -69,6 +75,7 @@ export class RegisterComponent {
     this.errorMessage = '';
     this.successMessage = '';
 
+    this.registerForm.markAllAsTouched(); // ⬅️ fuerza validación visual
 
     if (this.registerForm.invalid) {
       this.errorMessage = 'Por favor completa el formulario correctamente';
@@ -87,7 +94,6 @@ export class RegisterComponent {
     formData.append('description', formValue.description || '');
     formData.append('isAdmin', formValue.isAdmin);
     formData.append('createdAt', formValue.createdAt || '');
-    // formData.append('show', formValue.show);
     if (formValue.profileImage) {
       formData.append('profileImage', formValue.profileImage);
     }
@@ -103,14 +109,11 @@ export class RegisterComponent {
     }
   }
 
-
-
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
       this.registerForm.patchValue({ profileImage: file });
       this.registerForm.get('profileImage')?.updateValueAndValidity();
-
     }
   }
 }

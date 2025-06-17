@@ -6,13 +6,13 @@
 
   <!-- Email -->
   <div>
-    <label for="usernameOrEmail" class="block mb-1 text-sm font-medium">Email o Usuario</label>
+    <!-- <label for="usernameOrEmail" class="block mb-1 text-sm font-medium">Email o Usuario</label> -->
     <input
       type="text"
       id="usernameOrEmail"
       formControlName="usernameOrEmail"
       placeholder="Email o Usuario"
-      class="input-style"
+      class="bg-gray-100 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-800 p-2 rounded-md"
       required
     />
     <div *ngIf="loginForm.get('usernameOrEmail')?.touched && loginForm.get('usernameOrEmail')?.invalid" class="mt-1 text-sm text-red-500">
@@ -22,13 +22,13 @@
 
   <!-- Contraseña -->
   <div class="relative">
-    <label for="password" class="block mb-1 text-sm font-medium">Contraseña</label>
+    <!-- <label for="password" class="block mb-1 text-sm font-medium">Contraseña</label> -->
     <input
       [type]="isPasswordVisible ? 'text' : 'password'"
       id="password"
       formControlName="password"
       placeholder="Contraseña"
-      class="input-style"
+      class="bg-gray-100 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-800 p-2 rounded-md"
       required
     />
     <button

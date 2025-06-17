@@ -1,114 +1,146 @@
 <form
   [formGroup]="registerForm"
   (ngSubmit)="register()"
-  class="flex flex-col justify-center space-y-6 p-10 rounded-xl bg-gray-50 shadow-lg w-full max-w-xl mx-auto border border-gray-200 text-left animate-fade-in text-gray-800"
+  class="grid grid-cols-1 md:grid-cols-2 gap-6 p-10 rounded-xl bg-gray-50 shadow-lg w-full max-w-3xl mx-auto border border-gray-200 text-left animate-fade-in text-gray-800"
 >
-  <h2 class="text-center mb-4 text-3xl font-bold tracking-wide">Registro</h2>
+  <h2 class="col-span-1 md:col-span-2 text-center mb-4 text-3xl font-bold tracking-wide">Registro</h2>
 
   <!-- Email -->
-  <div>
-    <label for="email" class="block text-sm font-medium">Email</label>
+  <div class="col-span-1 md:col-span-2">
     <input
       type="email"
       id="email"
       formControlName="email"
       placeholder="Correo@ejemplo.com"
       required
-      class="input-style"
+      class="w-full bg-gray-100 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-800 p-2 rounded-md"
     />
-    <div *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid" class="text-red-500 text-sm">
-      <div *ngIf="registerForm.get('email')?.errors?.['required']">Campo obligatorio.</div>
-      <div *ngIf="registerForm.get('email')?.errors?.['email']">Formato inválido.</div>
+    <div class="text-sm text-red-500 mt-1" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">
+      <span *ngIf="registerForm.get('email')?.errors?.['required']">El correo es obligatorio.</span>
+      <span *ngIf="registerForm.get('email')?.errors?.['email']">Debe ser un correo válido.</span>
     </div>
   </div>
 
-  <!-- Nombre, Apellido y Usuario -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <div>
-      <label for="firstName" class="block text-sm font-medium">Nombre</label>
-      <input type="text" id="firstName" formControlName="firstName" placeholder="Tu nombre" class="input-style" />
-    </div>
-    <div>
-      <label for="lastName" class="block text-sm font-medium">Apellido</label>
-      <input type="text" id="lastName" formControlName="lastName" placeholder="Tu apellido" class="input-style" />
-    </div>
-    <div>
-      <label for="username" class="block text-sm font-medium">Usuario</label>
-      <input type="text" id="username" formControlName="username" placeholder="Tu usuario" class="input-style" />
-    </div>
-  </div>
-
-  <!-- Fecha y Descripción -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div>
-      <label for="birthDate" class="block text-sm font-medium">Fecha de nacimiento</label>
-      <input type="date" id="birthDate" formControlName="birthDate" class="input-style" />
-    </div>
-    <div>
-      <label for="description" class="block text-sm font-medium">Descripción breve</label>
-      <textarea
-        id="description"
-        formControlName="description"
-        placeholder="Cuéntanos sobre ti"
-        rows="2"
-        class="input-style"
-      ></textarea>
-    </div>
-  </div>
-
-  <!-- Imagen de perfil -->
+  <!-- Nombre / Apellido -->
   <div>
+    <input type="text" id="firstName" formControlName="firstName" placeholder="Tu nombre" class="w-full bg-gray-100 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-800 p-2 rounded-md" />
+    <div class="text-sm text-red-500 mt-1" *ngIf="registerForm.get('firstName')?.touched && registerForm.get('firstName')?.invalid">
+      <span *ngIf="registerForm.get('firstName')?.errors?.['required']">El nombre es obligatorio.</span>
+      <span *ngIf="registerForm.get('firstName')?.errors?.['minlength']">Mínimo 3 caracteres.</span>
+      <span *ngIf="registerForm.get('firstName')?.errors?.['maxlength']">Máximo 15 caracteres.</span>
+    </div>
+  </div>
+  <div>
+    <input type="text" id="lastName" formControlName="lastName" placeholder="Tu apellido" class="w-full bg-gray-100 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-800 p-2 rounded-md" />
+    <div class="text-sm text-red-500 mt-1" *ngIf="registerForm.get('lastName')?.touched && registerForm.get('lastName')?.invalid">
+      <span *ngIf="registerForm.get('lastName')?.errors?.['required']">El apellido es obligatorio.</span>
+      <span *ngIf="registerForm.get('lastName')?.errors?.['minlength']">Mínimo 3 caracteres.</span>
+      <span *ngIf="registerForm.get('lastName')?.errors?.['maxlength']">Máximo 15 caracteres.</span>
+    </div>
+  </div>
+
+  <!-- Usuario -->
+  <div class="col-span-1 md:col-span-2">
+    <input type="text" id="username" formControlName="username" placeholder="Tu usuario" class="w-full bg-gray-100 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-800 p-2 rounded-md" />
+    <div class="text-sm text-red-500 mt-1" *ngIf="registerForm.get('username')?.touched && registerForm.get('username')?.invalid">
+      <span *ngIf="registerForm.get('username')?.errors?.['required']">El usuario es obligatorio.</span>
+      <span *ngIf="registerForm.get('username')?.errors?.['minlength']">Mínimo 3 caracteres.</span>
+      <span *ngIf="registerForm.get('username')?.errors?.['maxlength']">Máximo 15 caracteres.</span>
+    </div>
+  </div>
+
+  <!-- Fecha / Descripción -->
+  <div>
+    <label for="birthDate" class="block text-sm font-medium">Fecha de nacimiento</label>
+    <input
+      type="date"
+      id="birthDate"
+      formControlName="birthDate"
+      [max]="maxBirthDate"
+      [min]="minBirthDate"
+      class="w-full bg-gray-100 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-800 p-2 rounded-md"
+    />
+    <div class="text-sm text-red-500 mt-1" *ngIf="registerForm.get('birthDate')?.touched && registerForm.get('birthDate')?.invalid">
+      <span *ngIf="registerForm.get('birthDate')?.errors?.['required']">La fecha es obligatoria.</span>
+      <span *ngIf="registerForm.get('birthDate')?.errors?.['underage']">Debes tener al menos 18 años.</span>
+    </div>
+  </div>
+  <div>
+    <label for="description" class="block text-sm font-medium">Descripción breve</label>
+    <textarea
+      id="description"
+      formControlName="description"
+      placeholder="Cuéntanos sobre ti"
+      rows="2"
+      class="w-full bg-gray-100 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-800 p-2 rounded-md"
+    ></textarea>
+    <div class="text-sm text-red-500 mt-1" *ngIf="registerForm.get('description')?.touched && registerForm.get('description')?.invalid">
+      <span *ngIf="registerForm.get('description')?.errors?.['maxlength']">Máximo 250 caracteres.</span>
+    </div>
+  </div>
+
+  <!-- Imagen -->
+  <div class="col-span-1 md:col-span-2">
     <label for="profileImage" class="block text-sm font-medium">Imagen de perfil</label>
     <input type="file" id="profileImage" (change)="onFileSelected($event)" accept="image/*" class="text-gray-600" />
   </div>
 
-  <!-- Contraseña y Confirmar -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div class="relative">
-      <label for="password" class="block text-sm font-medium">Contraseña</label>
-      <input
-        [type]="isPasswordVisible ? 'text' : 'password'"
-        id="password"
-        formControlName="password"
-        class="input-style"
-      />
-      <button
-        type="button"
-        class="absolute top-8 right-4 text-gray-500 hover:text-black"
-        (click)="togglePasswordVisibility()"
-      >
-        <span class="material-icons">{{ isPasswordVisible ? 'visibility_off' : 'visibility' }}</span>
-      </button>
+  <!-- Contraseña / Confirmar -->
+  <div class="relative">
+    <label for="password" class="block text-sm font-medium">Contraseña</label>
+    <input
+      [type]="isPasswordVisible ? 'text' : 'password'"
+      id="password"
+      formControlName="password"
+      class="w-full bg-gray-100 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-800 p-2 rounded-md"
+    />
+    <button
+      type="button"
+      class="absolute top-8 right-4 text-gray-500 hover:text-black"
+      (click)="togglePasswordVisibility()"
+    >
+      <span class="material-icons">{{ isPasswordVisible ? 'visibility_off' : 'visibility' }}</span>
+    </button>
+    <div class="text-sm text-red-500 mt-1" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid">
+      <span *ngIf="registerForm.get('password')?.errors?.['required']">La contraseña es obligatoria.</span>
+      <span *ngIf="registerForm.get('password')?.errors?.['minlength']">Debe tener al menos 8 caracteres.</span>
+      <span *ngIf="registerForm.get('password')?.errors?.['maxlength']">No puede superar 15 caracteres.</span>
+      <span *ngIf="registerForm.get('password')?.errors?.['pattern']">Debe incluir al menos una mayúscula y un número.</span>
     </div>
+  </div>
 
-    <div class="relative">
-      <label for="confirmPassword" class="block text-sm font-medium">Confirmar Contraseña</label>
-      <input
-        [type]="isPasswordVisible ? 'text' : 'password'"
-        id="confirmPassword"
-        formControlName="confirmPassword"
-        class="input-style"
-      />
-      <button
-        type="button"
-        class="absolute top-8 right-4 text-gray-500 hover:text-black"
-        (click)="togglePasswordVisibility()"
-      >
-        <span class="material-icons">{{ isPasswordVisible ? 'visibility_off' : 'visibility' }}</span>
-      </button>
+  <div class="relative">
+    <label for="confirmPassword" class="block text-sm font-medium">Confirmar Contraseña</label>
+    <input
+      [type]="isPasswordVisible ? 'text' : 'password'"
+      id="confirmPassword"
+      formControlName="confirmPassword"
+      class="w-full bg-gray-100 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-800 p-2 rounded-md"
+    />
+    <button
+      type="button"
+      class="absolute top-8 right-4 text-gray-500 hover:text-black"
+      (click)="togglePasswordVisibility()"
+    >
+      <span class="material-icons">{{ isPasswordVisible ? 'visibility_off' : 'visibility' }}</span>
+    </button>
+    <div class="text-sm text-red-500 mt-1" *ngIf="registerForm.errors?.['passwordMustmatch'] && registerForm.get('confirmPassword')?.touched">
+      Las contraseñas no coinciden.
     </div>
   </div>
 
   <!-- Botón -->
-  <button
-    type="submit"
-    [disabled]="registerForm.invalid"
-    class="w-full py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
-  >
-    Registrarse
-  </button>
+  <div class="col-span-1 md:col-span-2">
+    <button
+      type="submit"
+      [disabled]="registerForm.invalid"
+      class="w-full py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
+    >
+      Registrarse
+    </button>
+  </div>
 
   <!-- Mensajes -->
-  <p class="text-red-500 text-sm text-center mt-2" [hidden]="!errorMessage">{{ errorMessage }}</p>
-  <p class="text-green-500 text-sm text-center mt-2" [hidden]="!successMessage">{{ successMessage }}</p>
+  <p class="col-span-1 md:col-span-2 text-red-500 text-sm text-center mt-2" *ngIf="errorMessage">{{ errorMessage }}</p>
+  <p class="col-span-1 md:col-span-2 text-green-500 text-sm text-center mt-2" *ngIf="successMessage">{{ successMessage }}</p>
 </form>
