@@ -1,14 +1,22 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./src/**/*.{html,ts}", // Muy importante para Angular
+    "./src/**/*.{html,ts}",
   ],
   theme: {
     extend: {
       colors: {
-        'verde-lagarto': '#28a745', // Usá el color que necesites
+        iguana: {
+          DEFAULT: '#2F8A4C',   // tu verde lagartija
+          light: '#68B475',   // para hover/segundarios
+          dark: '#256E3A',   // para fondo “solid”
+        },
       },
+      fontFamily: {
+        logo: ['Titan One'],
+        body: ['Inter', 'sans-serif'],
+      }
     },
-  },
-  plugins: [],
+    plugins: [],
+  }
 }

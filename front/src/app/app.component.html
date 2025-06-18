@@ -1,13 +1,21 @@
-<div class="min-h-screen flex flex-col items-center justify-center bg-green-600 text-white w-screen">
-  <div class="flex items-center justify-center">
-    @if(showNavbarAndFooter){
+<!-- src/app/app.component.html -->
+<div class="min-h-screen flex bg-iguana pt-14">
+  <!-- Sidebar izquierdo -->
+  <aside
+    *ngIf="showNavbarAndFooter"
+    class="hidden md:flex flex-col w-16 bg-iguana-dark items-center py-4 space-y-6">
     <app-navbar></app-navbar>
-    }
+  </aside>
+
+  <!-- Contenido principal (router outlet) -->
+  <main class="flex-1 bg-gray-100 p-4">
     <router-outlet></router-outlet>
+  </main>
 
-    @if(showNavbarAndFooter){
+  <!-- Sidebar derecho -->
+  <aside
+    *ngIf="showNavbarAndFooter"
+    class="hidden lg:flex flex-col w-60 p-4 space-y-6">
     <app-aside></app-aside>
-    }
-  </div>
+  </aside>
 </div>
-
