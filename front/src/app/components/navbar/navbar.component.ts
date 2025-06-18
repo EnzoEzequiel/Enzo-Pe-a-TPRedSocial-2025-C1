@@ -23,8 +23,22 @@ export class NavbarComponent {
     profileImage: 'https://res.cloudinary.com/dqqaf002m/image/upload/v1749215793/user_dykckk.jpg'
     //reemplazar con datos del usuario
   };
+  notificationsOpen = false;
+  messagesOpen = false;
 
   constructor(private authService: AuthService) {
+  }
+
+  toggleNotifications() {
+    this.notificationsOpen = !this.notificationsOpen;
+    this.menuOpen = false;
+    this.messagesOpen = false;
+  }
+
+  toggleMessages() {
+    this.messagesOpen = !this.messagesOpen;
+    this.menuOpen = false;
+    this.notificationsOpen = false;
   }
 
   toggleMenu() {

@@ -1,5 +1,5 @@
 <header class="fixed top-0 left-0 right-0 h-14 bg-white border-b border-gray-300 z-50 flex items-center justify-between px-4">
-  <!-- Logo e input -->
+
   <div class="flex items-center gap-3">
     <img src="assets/images/home.png" alt="Zompix" class="h-15" />
 
@@ -8,39 +8,63 @@
       placeholder="Buscar en Zompix"
       class="bg-gray-300 px-4 py-1.5 rounded-full w-72 text-sm text-gray-800 placeholder-gray-500 focus:outline-none hidden md:block"
     />
-
   </div>
 
-  <!-- Navegación central -->
-  <nav class="flex gap-6">
+  <nav class="flex gap-6 items-center relative">
+
+    <!-- Inicio -->
     <a routerLink="/home" class="relative flex items-center justify-center w-12 h-12 hover:bg-gray-100 rounded-md">
       <i class="fas fa-house text-xl text-green-600"></i>
     </a>
+
+    <!-- Amigos -->
     <a routerLink="/friends" class="relative flex items-center justify-center w-12 h-12 hover:bg-gray-100 rounded-md">
       <i class="fas fa-user-friends text-xl text-gray-600"></i>
     </a>
+
+    <!-- Watch -->
     <a routerLink="/watch" class="relative flex items-center justify-center w-12 h-12 hover:bg-gray-100 rounded-md">
       <i class="fas fa-tv text-xl text-gray-600"></i>
     </a>
-    <a routerLink="/notifications" class="relative flex items-center justify-center w-12 h-12 hover:bg-gray-100 rounded-md">
-      <i class="fas fa-bell text-xl text-gray-600"></i>
-      <span
-        *ngIf="notifCount > 0"
-        class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full px-1.5">
-        {{ notifCount }}
-      </span>
-    </a>
-    <a routerLink="/messages" class="relative flex items-center justify-center w-12 h-12 hover:bg-gray-100 rounded-md">
-      <i class="fas fa-comment-dots text-xl text-gray-600"></i>
-      <span
-        *ngIf="msgCount > 0"
-        class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full px-1.5">
-        {{ msgCount }}
-      </span>
-    </a>
+
+    <!-- Notificaciones -->
+    <div class="relative">
+      <button (click)="toggleNotifications()" class="relative flex items-center justify-center w-12 h-12 hover:bg-gray-100 rounded-md">
+        <i class="fas fa-bell text-xl text-gray-600"></i>
+        <span *ngIf="notifCount > 0" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full px-1.5">
+          {{ notifCount }}
+        </span>
+      </button>
+      <div
+        *ngIf="notificationsOpen"
+        class="absolute right-0 mt-2 w-64 bg-gray-50 border border-gray-200 rounded-md shadow-lg py-2 z-10">
+        <p class="px-4 py-2 text-sm text-gray-800 font-semibold">Notificaciones</p>
+        <a class="block px-4 py-2 hover:bg-gray-200 text-sm text-gray-800 cursor-pointer">Te enviaron una solicitud</a>
+        <a class="block px-4 py-2 hover:bg-gray-200 text-sm text-gray-800 cursor-pointer">Nuevo comentario en tu publicación</a>
+        <a class="block px-4 py-2 hover:bg-gray-200 text-sm text-gray-800 cursor-pointer">Alguien reaccionó a tu foto</a>
+      </div>
+    </div>
+
+    <!-- Mensajes -->
+    <div class="relative">
+      <button (click)="toggleMessages()" class="relative flex items-center justify-center w-12 h-12 hover:bg-gray-100 rounded-md">
+        <i class="fas fa-comment-dots text-xl text-gray-600"></i>
+        <span *ngIf="msgCount > 0" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full px-1.5">
+          {{ msgCount }}
+        </span>
+      </button>
+      <div
+        *ngIf="messagesOpen"
+        class="absolute right-0 mt-2 w-64 bg-gray-50 border border-gray-200 rounded-md shadow-lg py-2 z-10">
+        <p class="px-4 py-2 text-sm text-gray-800 font-semibold">Mensajes</p>
+        <a class="block px-4 py-2 hover:bg-gray-200 text-sm text-gray-800 cursor-pointer">Juan: ¿Jugamos?</a>
+        <a class="block px-4 py-2 hover:bg-gray-200 text-sm text-gray-800 cursor-pointer">Lu: Te envié una imagen</a>
+        <a class="block px-4 py-2 hover:bg-gray-200 text-sm text-gray-800 cursor-pointer">Santi: ¿Estás?</a>
+      </div>
+    </div>
   </nav>
 
-  <!-- Perfil y menú -->
+  <!-- Menú del perfil -->
   <div class="relative">
     <button (click)="toggleMenu()" class="w-10 h-10 rounded-full overflow-hidden border border-gray-300">
       <img [src]="user.profileImage" class="w-full h-full object-cover" />
