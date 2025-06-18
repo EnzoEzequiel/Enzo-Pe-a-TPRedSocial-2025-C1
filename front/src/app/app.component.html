@@ -1,9 +1,13 @@
 <!-- src/app/app.component.html -->
-<div class="min-h-screen flex bg-iguana pt-14">
+<div
+  class="min-h-screen flex bg-iguana"
+  [ngClass]="{ 'pt-14': showNavbarAndFooter }"
+>
   <!-- Sidebar izquierdo -->
   <aside
     *ngIf="showNavbarAndFooter"
-    class="hidden md:flex flex-col w-16 bg-iguana-dark items-center py-4 space-y-6">
+    class="hidden md:flex flex-col w-16 bg-iguana-dark items-center py-4 space-y-6"
+  >
     <app-navbar></app-navbar>
   </aside>
 
@@ -15,7 +19,8 @@
   <!-- Sidebar derecho -->
   <aside
     *ngIf="showNavbarAndFooter"
-    class="hidden lg:flex flex-col w-60 p-4 space-y-6">
+    class="hidden lg:flex flex-col w-60 p-4 space-y-6"
+  >
     <app-aside></app-aside>
   </aside>
 </div>
