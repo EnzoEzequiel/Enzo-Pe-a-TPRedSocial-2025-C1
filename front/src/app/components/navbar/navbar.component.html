@@ -54,7 +54,7 @@
         <p class="px-4 py-2 text-sm text-gray-800 font-semibold">Mensajes</p>
         <a class="block px-4 py-2 hover:bg-gray-200 text-sm text-gray-800 cursor-pointer">Juan: ¿Jugamos?</a>
         <a class="block px-4 py-2 hover:bg-gray-200 text-sm text-gray-800 cursor-pointer">Lu: Te envié una imagen</a>
-        <a class="block px-4 py-2 hover:bg-gray-200 text-sm text-gray-800 cursor-pointer">Santi: ¿Estás?</a>
+        <a class="block px-4 py-2 hover:bg-gray-200 text-sm text-gray-800 cursor-pointer">user?.name : user.mensaje</a>
       </div>
     </div>
   </nav>
@@ -62,7 +62,7 @@
   <!-- Menú del perfil -->
   <div class="relative">
     <button (click)="toggleMenu()" class="w-10 h-10 rounded-full overflow-hidden border border-gray-300">
-      <img [src]="user.profileImage" class="w-full h-full object-cover" />
+      <img [src]="profileImage || 'assets/images/default-avatar.png'" class="w-full h-full object-cover" />
     </button>
     <div
       *ngIf="menuOpen"

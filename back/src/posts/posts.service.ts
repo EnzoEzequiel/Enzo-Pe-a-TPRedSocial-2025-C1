@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Injectable, InternalServerErrorException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Post } from './schemas/post.schema';
