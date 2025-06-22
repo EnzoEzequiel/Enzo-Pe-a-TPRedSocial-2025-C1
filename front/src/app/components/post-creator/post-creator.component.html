@@ -1,23 +1,32 @@
 <div class="bg-white rounded-xl shadow p-4 mb-4">
-  <div class="flex items-center space-x-3">
-    <img [src]="profileImage" class="w-10 h-10 rounded-full object-cover" />
-    <input
-      [(ngModel)]="postText"
-      placeholder="¿Qué estás pensando, Zompix?"
-      class="bg-gray-300 rounded-full px-4 py-2 w-full text-sm focus:outline-none"
-    />
-  </div>
-  <div class="border-t mt-3 pt-2 flex justify-around text-sm text-gray-600">
-    <label class="flex items-center space-x-1 cursor-pointer hover:bg-gray-100 p-2 rounded-lg">
-      <i class="fas fa-photo-video text-green-600 text-lg"></i> <span>Foto/video</span>
-      <input type="file" hidden (change)="onImageSelected($event)" />
-    </label>
-    <button
-      (click)="post()"
-      [disabled]="!postText && !imageFile"
-      class="bg-[#1877f2] text-white font-semibold px-4 py-1 rounded-full hover:bg-blue-700 disabled:opacity-50"
-    >
-      Publicar
-    </button>
+  <div class="flex items-start space-x-3">
+    <img [src]="profileImage || 'assets/images/default-avatar.png'" class="w-10 h-10 rounded-full object-cover" />
+    <div class="flex-1">
+      <textarea
+        [(ngModel)]="postText"
+        placeholder="¿Qué estás pensando, Zompix?"
+        class="bg-gray-100 rounded-lg px-4 py-2 w-full text-sm focus:outline-none resize-none h-24"
+      ></textarea>
+
+      <div *ngIf="imagePreview" class="mt-2">
+        <img [src]="imagePreview" alt="Vista previa" class="max-h-40 rounded-lg object-cover" />
+      </div>
+
+      <div class="border-t mt-3 pt-2 flex items-center justify-between text-sm text-gray-600">
+        <label class="flex items-center space-x-1 cursor-pointer hover:bg-gray-200 p-2 rounded-lg">
+          <i class="fas fa-photo-video text-iguana text-lg"></i>
+          <span>Foto/video</span>
+          <input type="file" accept="image/*" hidden (change)="onImageSelected($event)" />
+        </label>
+
+        <button
+          (click)="post()"
+          [disabled]="!canPost"
+          class="bg-blue-500 text-white font-semibold px-4 py-1 rounded-full hover:bg-blue-600 disabled:opacity-50"
+        >
+          Publicar
+        </button>
+      </div>
+    </div>
   </div>
 </div>

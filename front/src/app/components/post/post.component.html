@@ -1,8 +1,8 @@
 <div class="bg-white rounded-lg shadow mb-6">
   <div class="flex items-center p-3">
-    <img [src]="post.user.profileImage" class="w-9 h-9 rounded-full object-cover mr-3" />
+    <img [src]="post.user?.profileImage || 'assets/images/default-avatar.png'" class="w-10 h-10 rounded-full object-cover" />
     <div>
-      <p class="font-semibold text-gray-800">{{ post.user.firstName }} {{ post.user.lastName }}</p>
+      <p class="font-semibold text-gray-800">{{ post.user?.firstName }} {{ post.user?.lastName }}</p>
       <p class="text-xs text-gray-500">{{ post.createdAt | timeAgo }}</p>
     </div>
   </div>

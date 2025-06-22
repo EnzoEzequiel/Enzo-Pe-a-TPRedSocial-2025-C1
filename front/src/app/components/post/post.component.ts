@@ -14,11 +14,19 @@ import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
   styleUrls: ['./post.component.css']
 })
 export class PostComponent {
+  private _post: any;
   @Output() postLiked = new EventEmitter<void>();
-  @Input() post: any;
-  @Input() firstName!: string;
-  @Input() lastName!: string;
-  @Input() profileImage!: string;
+  // @Input() post: any;
+  @Input() set post(value: any) {
+    if (value && typeof value.createdAt === 'string') {
+      value.createdAt = new Date(value.createdAt);
+    }
+    this._post = value;
+  }
+
+  get post(): any {
+    return this._post;
+  }
   loading = false;
   userSignal!: Signal<User | null>;
   @Output() interactionsRequested = new EventEmitter<void>();
