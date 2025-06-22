@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from './dto/create-user.dto';
-
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
@@ -74,6 +74,15 @@ export class AuthService {
 
     async findOneByUsername(username: string): Promise<CreateUserDto | null> {
         return this.userModel.findOne({ username }).exec();
+    }
+    generateToken(user: any): string {
+    const payload = {
+        sub: user._id,
+        username: user.username,
+        isAdmin: user.isAdmin,
+    };
+
+    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '15m' });
     }
 }
 

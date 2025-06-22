@@ -12,7 +12,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthService } from './auth.service';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { CreateUserDto } from './dto/create-user.dto';
-
+import { JwtAuthGuard } from './jwt/jwt-auth.guard';
+import { UseGuards, Req } from '@nestjs/common';
 
 @Controller('auth')
 export class AuthController {
@@ -64,4 +65,18 @@ export class AuthController {
     async list(): Promise<CreateUserDto[]> {
         return this.authService.findAll();
     }
+    @Post('autorizar')
+    @UseGuards(JwtAuthGuard)
+    autorizar(@Req() req) {
+    return req.user;
+    }
+
+    @Post('refrescar')
+    @UseGuards(JwtAuthGuard)
+    refrescar(@Req() req) {
+    const user = req.user;
+    const newToken = this.authService.generateToken(user);
+    return { accessToken: newToken };
+    }
+
 }
