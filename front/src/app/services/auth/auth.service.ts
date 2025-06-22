@@ -46,6 +46,7 @@ export class AuthService {
   }
 
   private saveUserToLocalStorage(user: User): void {
+    localStorage.setItem('_id', user._id);
     localStorage.setItem('username', user.username);
     localStorage.setItem('firstName', user.firstName);
     localStorage.setItem('lastName', user.lastName);
@@ -76,4 +77,10 @@ export class AuthService {
       show: localStorage.getItem('show') === 'true',
     } as User;
   }
+
+  getCurrentUser(): Promise<User | null> {
+    return Promise.resolve(this.getUserFromLocalStorage());
+  }
+
+
 }

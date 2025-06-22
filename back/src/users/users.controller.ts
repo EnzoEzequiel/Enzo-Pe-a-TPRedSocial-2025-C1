@@ -15,6 +15,11 @@ export class UsersController {
         return this.usersService.findOne(id);
     }
 
+    @Get('friends/:id')
+    async getFriends(@Param('id') userId: string) {
+    return this.usersService.getFriends(userId);
+    }
+
     @Delete(':id')
     remove(@Param('id') id: string) {
         return this.usersService.remove(id);

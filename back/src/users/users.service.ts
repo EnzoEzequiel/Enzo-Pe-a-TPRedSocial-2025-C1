@@ -35,4 +35,10 @@ export class UsersService {
         const result = await this.userModel.findByIdAndDelete(id).exec();
         if (!result) throw new NotFoundException('Usuario no encontrado para eliminar');
     }
+
+    async getFriends(userId: string): Promise<User[]> {
+        const user = await this.userModel.findById(userId).populate('friends', '-password').exec();
+        if (!user) throw new NotFoundException('Usuario no encontrado');
+        return user.friends;
+    }
 }

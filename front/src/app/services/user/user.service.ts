@@ -18,5 +18,16 @@ export class UserService {
       params: { username: username }
     });
   }
+  // async getFriends(userId: string): Observable<User[]> {
+  //   const user = await this.User.findById(userId).populate('friends', '-password');
+  //   if (!user) {
+  //     throw new NotFoundException('Usuario no encontrado');
+  //   }
+  //   return user.friends;
+  // }
+  getFriends(userId: string) {
+    return this.http.get<User[]>(`${this.apiUrl}/users/friends/${userId}`);
+  }
+
 
 }
