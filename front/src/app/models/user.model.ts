@@ -8,7 +8,7 @@ export interface User {
     birthDate: string;
     description?: string;
     profileImage?: string;
-    isAdmin: string;
+    role: string; // 'user' or 'admin'
     accessToken: string;
     createdAt: Date | string;
     show: boolean;

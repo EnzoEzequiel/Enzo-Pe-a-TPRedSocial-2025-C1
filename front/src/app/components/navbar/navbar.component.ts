@@ -17,7 +17,7 @@ export class NavbarComponent {
   username = localStorage.getItem('username') || '';
   firstName = localStorage.getItem('firstName') || '';
   lastName = localStorage.getItem('lastName') || '';
-  isAdmin = localStorage.getItem('isAdmin') === 'true';
+  role = localStorage.getItem('role') || 'user';
   profileImage = localStorage.getItem('profileImage') || '';
   user = {
     profileImage: 'https://res.cloudinary.com/dqqaf002m/image/upload/v1749215793/user_dykckk.jpg'
@@ -25,6 +25,10 @@ export class NavbarComponent {
   };
   notificationsOpen = false;
   messagesOpen = false;
+
+  get isAdmin() {
+    return this.role === 'admin';
+  }
 
   constructor(private authService: AuthService) {
   }

@@ -25,8 +25,13 @@ export class AuthService {
 
   async login(usernameOrEmail: string, password: string): Promise<User> {
     try {
-      const response = this.http.post<User>(`${this.apiUrl}/login`, { usernameOrEmail, password });
-      const user = await firstValueFrom(response);
+      const response = this.http.post<{ accessToken: string; user: User }>(`${this.apiUrl}/login`, {
+        usernameOrEmail,
+        password,
+      });
+      const { accessToken, user } = await firstValueFrom(response);
+
+      user.accessToken = accessToken;
       this.saveUserToLocalStorage(user);
       this.currentUser.set(user);
 
@@ -38,6 +43,7 @@ export class AuthService {
       throw new Error('Credenciales inválidas o error en el servidor.');
     }
   }
+
 
   logout(): void {
     localStorage.clear();
@@ -51,7 +57,7 @@ export class AuthService {
     localStorage.setItem('firstName', user.firstName);
     localStorage.setItem('lastName', user.lastName);
     localStorage.setItem('accessToken', user.accessToken);
-    localStorage.setItem('isAdmin', user.isAdmin.toString());
+    localStorage.setItem('role', user.role);
     localStorage.setItem('profileImage', user.profileImage || '');
     localStorage.setItem('description', user.description || '');
     localStorage.setItem('birthDate', user.birthDate);
@@ -65,11 +71,12 @@ export class AuthService {
     const username = localStorage.getItem('username');
     if (!username) return null;
     return {
+      _id: localStorage.getItem('_id') || '',
       username,
       firstName: localStorage.getItem('firstName') || '',
       lastName: localStorage.getItem('lastName') || '',
       accessToken: localStorage.getItem('accessToken') || '',
-      isAdmin: localStorage.getItem('isAdmin'),
+      role: localStorage.getItem('role') || 'user',
       profileImage: localStorage.getItem('profileImage') || '',
       description: localStorage.getItem('description') || '',
       birthDate: localStorage.getItem('birthDate') || '',
@@ -82,5 +89,39 @@ export class AuthService {
     return Promise.resolve(this.getUserFromLocalStorage());
   }
 
+  async authorize(): Promise<boolean> {
+    try {
+      const response = this.http.get<{ valid: boolean }>(`${this.apiUrl}/authorize`);
+      const result = await firstValueFrom(response);
+      return result.valid;
+    } catch {
+      this.logout();
+      return false;
+    }
+  }
 
+  async refreshToken(): Promise<string | null> {
+    try {
+      const response = this.http.post<{ accessToken: string }>(`${this.apiUrl}/refresh`, {});
+      const result = await firstValueFrom(response);
+      if (result.accessToken) {
+        localStorage.setItem('accessToken', result.accessToken);
+        return result.accessToken;
+      }
+      return null;
+    } catch {
+      this.logout();
+      return null;
+    }
+  }
+
+  // Session timer logic (skeleton, to be used in app.component or a dedicated service)
+  sessionTimeout: any;
+  startSessionTimer(durationMs: number, onTimeout: () => void) {
+    if (this.sessionTimeout) clearTimeout(this.sessionTimeout);
+    this.sessionTimeout = setTimeout(onTimeout, durationMs);
+  }
+  clearSessionTimer() {
+    if (this.sessionTimeout) clearTimeout(this.sessionTimeout);
+  }
 }

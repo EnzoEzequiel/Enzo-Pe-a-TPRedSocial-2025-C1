@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, BadRequestException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Post } from './schemas/post.schema';
 import { CreateLikeDto } from './dto/create-like.dto';
@@ -97,5 +97,42 @@ export class PostsService {
         }
     }
 
+    async logicalDeletePost(postId: string, username: string, role: string) {
+        try {
+            const post = await this.postModel.findById(postId);
+            if (!post) {
+                throw new BadRequestException('No se encontró el post');
+            }
+            if (role !== 'admin' && post.username !== username) {
+                throw new ForbiddenException('No tienes permiso para eliminar este post');
+            }
+            post.show = false;
+            await post.save();
+            return { message: 'Post eliminado lógicamente', post };
+        } catch {
+            throw new InternalServerErrorException('Error al eliminar el post');
+        }
+    }
+
+    async getPostsOrderedByLikes(): Promise<Post[]> {
+        try {
+            const posts = await this.postModel.find({ show: true }).lean();
+            return posts.sort((a, b) => (b.likes?.length || 0) - (a.likes?.length || 0));
+        } catch {
+            throw new InternalServerErrorException('Error al ordenar los posts por likes');
+        }
+    }
+
+    // async editComment(postId: string, commentId: string, updateCommentDto: UpdateCommentDto, username: string, role: string) {
+    //     const post = await this.postModel.findById(postId);
+    //     if (!post) throw new NotFoundException('Post not found');
+    //     const comment = post.comments.id(commentId);
+    //     if (!comment) throw new NotFoundException('Comment not found');
+    //     if (role !== 'admin' && comment.username !== username) throw new ForbiddenException('No permission');
+    //     comment.content = updateCommentDto.content;
+    //     comment.modified = true;
+    //     await post.save();
+    //     return comment;
+    // }
 
 }

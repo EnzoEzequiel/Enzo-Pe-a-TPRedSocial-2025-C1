@@ -9,12 +9,15 @@ import {
   Query,
   Param,
   Get,
+  // Put,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PostsService } from './posts.service';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { CreateLikeDto } from './dto/create-like.dto';
+// import { UpdateCommentDto } from './dto/update-comment.dto';
+import { Roles } from '../auth/roles.decorator';
 
 @Controller('posts')
 export class PostsController {
@@ -77,6 +80,10 @@ export class PostsController {
   findAll() {
     return this.postsService.findAll();
   }
+  // @Get('/all')
+  // findAll(@Query('page') page = 1, @Query('limit') limit = 10) {
+  //   return this.postsService.findAllPaginated(page, limit);
+  // }
 
   @Post('like/:postId')
   async likePost(
@@ -85,4 +92,31 @@ export class PostsController {
   ) {
     return this.postsService.likePost(postId, createLikeDto);
   }
+
+  @Post('delete/:postId')
+  @Roles('admin', 'user')
+  async logicalDeletePost(
+    @Param('postId') postId: string,
+    @Body('username') username: string,
+    @Body('role') role: string,
+  ) {
+    return this.postsService.logicalDeletePost(postId, username, role);
+  }
+
+  @Get('order-by-likes')
+  async getPostsOrderedByLikes() {
+    return this.postsService.getPostsOrderedByLikes();
+  }
+
+  // @Put('comment/:postId/:commentId')
+  // @Roles('user', 'admin')
+  // async editComment(
+  //   @Param('postId') postId: string,
+  //   @Param('commentId') commentId: string,
+  //   @Body() updateCommentDto: UpdateCommentDto,
+  //   @Body('username') username: string,
+  //   @Body('role') role: string,
+  // ) {
+  //   return this.postsService.editComment(postId, commentId, updateCommentDto, username, role);
+  // }
 }

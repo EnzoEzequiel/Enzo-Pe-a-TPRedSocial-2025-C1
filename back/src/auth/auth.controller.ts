@@ -65,18 +65,18 @@ export class AuthController {
     async list(): Promise<CreateUserDto[]> {
         return this.authService.findAll();
     }
-    @Post('autorizar')
+    @Post('authorize')
     @UseGuards(JwtAuthGuard)
-    autorizar(@Req() req) {
-    return req.user;
+    authorize() {
+      return { valid: true };
     }
 
-    @Post('refrescar')
+    @Post('refresh')
     @UseGuards(JwtAuthGuard)
-    refrescar(@Req() req) {
-    const user = req.user;
-    const newToken = this.authService.generateToken(user);
-    return { accessToken: newToken };
+    refresh(@Req() req) {
+      const user = req.user;
+      const newToken = this.authService.generateToken(user);
+      return { accessToken: newToken };
     }
 
 }

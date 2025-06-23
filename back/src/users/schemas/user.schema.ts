@@ -30,8 +30,8 @@ export class User {
     @Prop()
     profileImage?: string;
 
-    @Prop({ default: false })
-    isAdmin: string;
+    @Prop({ default: 'user' })
+    role: string;
 
     @Prop({ default: Date.now })
     createdAt: Date;

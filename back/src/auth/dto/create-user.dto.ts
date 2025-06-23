@@ -46,8 +46,9 @@ export class CreateUserDto {
     @IsString()
     profileImage?: string;
 
+    @IsOptional()
     @IsString()
-    isAdmin: string;
+    role?: string; // 'user' or 'admin'
 
     @IsDateString()
     createdAt: Date;

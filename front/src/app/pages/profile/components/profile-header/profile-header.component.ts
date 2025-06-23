@@ -19,7 +19,7 @@ export class ProfileHeaderComponent {
   username = computed(() => this.userSignal()?.username || '');
   firstName = computed(() => this.userSignal()?.firstName || '');
   lastName = computed(() => this.userSignal()?.lastName || '');
-  isAdmin = computed(() => this.userSignal()?.isAdmin === 'true');
+  isAdmin = computed(() => this.userSignal()?.role === 'admin');
   profileImage = computed(() => this.userSignal()?.profileImage || '');
   description = computed(() => this.userSignal()?.description || '');
   createdAt = computed(() => {

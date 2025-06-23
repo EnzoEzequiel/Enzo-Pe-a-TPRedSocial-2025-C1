@@ -26,41 +26,40 @@ export class AuthService {
         return newUser.save();
     }
 
-    async login(usernameOrEmail: string, password: string): Promise<{ accessToken: string; username: string; isAdmin: string; firstName: string; lastName: string, birthDate: string; description: string, email: string, profileImage: string, createdAt: Date, show: boolean } | null> {
+    async login(usernameOrEmail: string, password: string): Promise<{ accessToken: string; user: any } | null> {
         const user = await this.userModel.findOne({
             $or: [{ email: usernameOrEmail }, { username: usernameOrEmail }]
         }).exec();
 
-        if (!user) {
-            return null;
-        }
+        if (!user) return null;
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
-
-        if (!isPasswordValid) {
-            return null;
-        }
+        if (!isPasswordValid) return null;
 
         const payload = {
             sub: user._id,
             username: user.username,
             email: user.email,
+            role: user.role,
         };
 
         const accessToken = this.jwtService.sign(payload);
 
         return {
             accessToken,
-            username: user.username,
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            isAdmin: user.isAdmin,
-            birthDate: user.birthDate,
-            description: user.description || "",
-            profileImage: user.profileImage || "",
-            createdAt: user.createdAt,
-            show: user.show
+            user: {
+                _id: user._id,
+                username: user.username,
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                role: user.role,
+                birthDate: user.birthDate,
+                description: user.description || "",
+                profileImage: user.profileImage || "",
+                createdAt: user.createdAt,
+                show: user.show
+            }
         };
     }
 
@@ -76,13 +75,12 @@ export class AuthService {
         return this.userModel.findOne({ username }).exec();
     }
     generateToken(user: any): string {
-    const payload = {
-        sub: user._id,
-        username: user.username,
-        isAdmin: user.isAdmin,
-    };
-
-    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '15m' });
+        const payload = {
+            sub: user._id,
+            username: user.username,
+            role: user.role,
+        };
+        return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '15m' });
     }
 }
 

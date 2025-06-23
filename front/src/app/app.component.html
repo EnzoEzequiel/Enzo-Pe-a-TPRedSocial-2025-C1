@@ -1,4 +1,14 @@
 <!-- src/app/app.component.html -->
+<div *ngIf="loading()" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+  <app-spinner></app-spinner>
+</div>
+<div *ngIf="sessionModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+  <div class="bg-white p-6 rounded shadow-lg text-center">
+    <h2 class="text-lg font-bold mb-4">¿Deseas extender tu sesión?</h2>
+    <button (click)="extendSession()" class="bg-green-600 text-white px-4 py-2 rounded mr-2">Sí, continuar</button>
+    <button (click)="cancelSession()" class="bg-red-600 text-white px-4 py-2 rounded">Cerrar sesión</button>
+  </div>
+</div>
 <div
   class="min-h-screen flex bg-iguana"
   [ngClass]="{ 'pt-14': showNavbarAndFooter }"
