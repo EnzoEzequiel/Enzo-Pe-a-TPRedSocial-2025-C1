@@ -39,4 +39,11 @@ export class PostService {
     });
   }
 
+  addComment(postId: string, comment: any) {
+    return this.http.post(`${this.apiUrl}/${postId}/comment`, comment);
+  }
+  getComments(postId: string, page = 1, limit = 10) {
+    return this.http.get(`${this.apiUrl}/${postId}/comments`, { params: { page, limit } });
+  }
+
 }

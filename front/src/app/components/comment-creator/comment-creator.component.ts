@@ -1,7 +1,6 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component,Input, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
-
 @Component({
   selector: 'app-comment-creator',
   imports: [FormsModule, NgClass],
@@ -10,7 +9,7 @@ import { NgClass } from '@angular/common';
 })
 export class CommentCreatorComponent {
   commentText: string = '';
-
+  @Input() disabled: boolean = false;
   @Output() commentCreated = new EventEmitter<string>();
   @Output() closeModal = new EventEmitter<void>();
 

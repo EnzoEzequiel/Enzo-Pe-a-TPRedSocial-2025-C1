@@ -42,7 +42,9 @@ export class Post extends Document {
         firstName: string;
         lastName: string;
         profileImage: string;
+        date: Date;
         content: string;
+        modified?: boolean;
     }[];
 
     @Prop({ default: Date.now })

@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException, BadRequestException, Forbidde
 import { InjectModel } from '@nestjs/mongoose';
 import { Post } from './schemas/post.schema';
 import { CreateLikeDto } from './dto/create-like.dto';
+import { CreateCommentDto } from './dto/create-comment.dto';
 import { Model } from 'mongoose';
 
 @Injectable()
@@ -123,6 +124,16 @@ export class PostsService {
         }
     }
 
+    async getComments(postId: string, page = 1, limit = 10) {
+        const post = await this.postModel.findById(postId);
+        if (!post) throw new BadRequestException('No se encontró el post');
+        const start = (page - 1) * limit;
+        const end = start + limit;
+        const total = post.comments.length;
+        const comments = post.comments.slice(start, end);
+        return { comments, total };
+    }
+
     // async editComment(postId: string, commentId: string, updateCommentDto: UpdateCommentDto, username: string, role: string) {
     //     const post = await this.postModel.findById(postId);
     //     if (!post) throw new NotFoundException('Post not found');
@@ -134,5 +145,16 @@ export class PostsService {
     //     await post.save();
     //     return comment;
     // }
+    async addComment(postId: string, commentData: CreateCommentDto) {
+        const post = await this.postModel.findById(postId);
+        if (!post) throw new BadRequestException('No se encontró el post');
+        post.comments.unshift({
+            ...commentData,
+            date: new Date(),
+            modified: false
+        });
+        await post.save();
+        return post.comments[0];
+    }
 
 }

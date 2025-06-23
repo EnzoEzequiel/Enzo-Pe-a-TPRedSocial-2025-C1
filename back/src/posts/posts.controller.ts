@@ -17,6 +17,7 @@ import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { CreateLikeDto } from './dto/create-like.dto';
 // import { UpdateCommentDto } from './dto/update-comment.dto';
+import { CreateCommentDto } from './dto/create-comment.dto';
 import { Roles } from '../auth/roles.decorator';
 
 @Controller('posts')
@@ -108,6 +109,22 @@ export class PostsController {
     return this.postsService.getPostsOrderedByLikes();
   }
 
+  @Post(':postId/comment')
+  async addComment(
+    @Param('postId') postId: string,
+    @Body() createCommentDto: CreateCommentDto
+  ) {
+    return this.postsService.addComment(postId, createCommentDto);
+  }
+  
+  @Get(':postId/comments')
+  async getComments(
+    @Param('postId') postId: string,
+    @Query('page') page = 1,
+    @Query('limit') limit = 10
+  ) {
+    return this.postsService.getComments(postId, Number(page), Number(limit));
+  }
   // @Put('comment/:postId/:commentId')
   // @Roles('user', 'admin')
   // async editComment(
