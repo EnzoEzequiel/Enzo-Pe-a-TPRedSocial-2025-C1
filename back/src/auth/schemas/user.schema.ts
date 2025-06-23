@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import * as mongoose from 'mongoose';
 
 export type UserDocument = User & Document;
 
@@ -29,8 +30,8 @@ export class User {
     @Prop()
     profileImage?: string;
 
-    @Prop({ default: "false" })
-    isAdmin: string;
+    @Prop({ default: 'user' })
+    role: string;
 
     @Prop({ default: Date.now })
     createdAt: Date;
@@ -38,6 +39,8 @@ export class User {
     @Prop({ default: true })
     show: boolean;
 
+    @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: 'User', default: [] })
+    friends: User[];
 
 }
 
