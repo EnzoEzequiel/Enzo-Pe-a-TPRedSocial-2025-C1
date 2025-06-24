@@ -1,6 +1,11 @@
 <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-  <div class="bg-white w-full max-w-md rounded-lg shadow-lg p-6">
-    <button (click)="close()" class="absolute top-4 right-4 text-gray-600 hover:text-gray-800">×</button>
+  <div class="bg-white w-full max-w-md rounded-lg shadow-lg p-6 relative">
+    <button
+      (click)="close()"
+      class="absolute top-3 right-3 text-green-600 hover:text-green-700 text-2xl font-bold focus:outline-none"
+      aria-label="Cerrar">
+      &times;
+    </button>
     <textarea [(ngModel)]="commentText" rows="3" placeholder="Escribe un comentario..."
       class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800" maxlength="200"></textarea>
     <div class="flex justify-between items-center mt-2">

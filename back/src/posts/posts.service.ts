@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, BadRequestException, ForbiddenException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Post } from './schemas/post.schema';
 import { CreateLikeDto } from './dto/create-like.dto';
@@ -132,6 +132,23 @@ export class PostsService {
         const total = post.comments.length;
         const comments = post.comments.slice(start, end);
         return { comments, total };
+    }
+
+    async deleteComment(postId: string, commentId: string, username: string, role: string) {
+        const post = await this.postModel.findById(postId);
+        if (!post) throw new BadRequestException('No se encontró el post');
+
+        const commentIndex = post.comments.findIndex((c: any) => c._id.toString() === commentId);
+        if (commentIndex === -1) throw new NotFoundException('No se encontró el comentario');
+
+        const comment = post.comments[commentIndex];
+        if (role !== 'admin' && comment.username !== username) {
+            throw new ForbiddenException('No tienes permiso para eliminar este comentario');
+        }
+
+        post.comments.splice(commentIndex, 1);
+        await post.save();
+        return { message: 'Comentario eliminado correctamente' };
     }
 
     // async editComment(postId: string, commentId: string, updateCommentDto: UpdateCommentDto, username: string, role: string) {

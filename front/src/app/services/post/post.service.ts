@@ -46,4 +46,13 @@ export class PostService {
     return this.http.get(`${this.apiUrl}/${postId}/comments`, { params: { page, limit } });
   }
 
+  // deleteComment(postId: string, commentId: string) {
+  //   return this.http.delete(`${this.apiUrl}/${postId}/comments/${commentId}`);
+  // }
+  deleteComment(postId: string, commentId: string, username: string, role: string) {
+    return this.http.delete(
+      `${this.apiUrl}/posts/${postId}/comments/${commentId}?username=${username}&role=${role}`
+    );
+}
+
 }

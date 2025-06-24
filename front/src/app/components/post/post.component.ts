@@ -23,6 +23,8 @@ export class PostComponent {
   showComments = false;
   loadingComments = false;
   addingComment = false;
+  isAdmin: boolean = false;
+  showCommentModal = false;
 
 
   @Output() postLiked = new EventEmitter<void>();
@@ -45,7 +47,24 @@ export class PostComponent {
     private postService: PostService,
     private authService: AuthService
   ) {
+    this.isAdmin = this.authService.isAdmin();
     this.userSignal = this.authService.currentUser;
+  }
+
+  eliminateComment(commentId: string) {
+    const user = this.userSignal();
+    const username = user?.username || localStorage.getItem('username') || '';
+    const role = this.isAdmin ? 'admin' : 'user';
+
+    console.log('postId:', this.post._id, 'commentId:', commentId, 'username:', username, 'role:', role);
+
+    this.postService.deleteComment(this.post._id, commentId, username, role)
+      .subscribe(() => {
+        this.comments = this.comments.filter(comment => comment._id !== commentId);
+        this.totalComments--;
+      }, error => {
+        console.error('Error al eliminar el comentario:', error);
+      });
   }
 
   onClick() {
@@ -120,6 +139,7 @@ export class PostComponent {
     if (this.showComments) {
       this.loadComments(true);
     }
+    this.showCommentModal = true;
   }
 
 }

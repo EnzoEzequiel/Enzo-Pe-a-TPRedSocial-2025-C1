@@ -12,9 +12,9 @@ body {
   Arial, "Noto Sans",
   sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
-body {
+/* body {
   @apply bg-[#f0f2f5] text-[#050505] font-sans;
-}
+} */
 
 .feed-container {
   max-width: 620px;

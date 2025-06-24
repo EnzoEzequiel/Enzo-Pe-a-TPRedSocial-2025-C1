@@ -9,6 +9,7 @@ import {
   Query,
   Param,
   Get,
+  Delete,
   // Put,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -124,6 +125,16 @@ export class PostsController {
     @Query('limit') limit = 10
   ) {
     return this.postsService.getComments(postId, Number(page), Number(limit));
+  }
+
+  @Delete(':postId/comments/:commentId')
+  async deleteComment(
+    @Param('postId') postId: string,
+    @Param('commentId') commentId: string,
+    @Query('username') username: string,
+    @Query('role') role: string,
+  ) {
+    return this.postsService.deleteComment(postId, commentId, username, role);
   }
   // @Put('comment/:postId/:commentId')
   // @Roles('user', 'admin')

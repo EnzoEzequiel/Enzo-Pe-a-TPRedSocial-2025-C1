@@ -115,7 +115,10 @@ export class AuthService {
     }
   }
 
-  // Session timer logic (skeleton, to be used in app.component or a dedicated service)
+  isAdmin(): boolean {
+    return this.currentUser()?.role === 'admin';
+  }
+
   sessionTimeout: any;
   startSessionTimer(durationMs: number, onTimeout: () => void) {
     if (this.sessionTimeout) clearTimeout(this.sessionTimeout);

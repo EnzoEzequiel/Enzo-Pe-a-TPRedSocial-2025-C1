@@ -1,15 +1,21 @@
-<header class="fixed top-0 left-0 right-0 h-14 bg-white border-b border-iguana z-50 flex items-center justify-between px-4">
+<header
+  class="fixed top-0 left-0 right-0 h-14 bg-white border-b border-iguana z-50 flex items-center justify-between px-4">
 
   <div class="flex items-center gap-3">
-    <img src="assets/images/home.png" routerLink="/home" alt="Zompix" class="h-15 " />
+    <img src="assets/images/home.png" routerLink="/home" alt="Zompix" class="h-15" />
 
-    <input
-      type="text"
-      placeholder="Buscar en Zompix"
-      class="bg-gray-300 px-4 py-1.5 rounded-full w-72 text-sm text-gray-800 placeholder-gray-500 focus:outline-none hidden md:block"
-    />
+    <div class="relative hidden md:block w-72">
+      <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 pointer-events-none">
+        <!-- SVG de lupa -->
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8" stroke="currentColor" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" />
+        </svg>
+      </span>
+      <input type="text" placeholder="Buscar en Zompix"
+        class="bg-gray-300 pl-10 pr-4 py-1.5 rounded-full w-full text-sm text-gray-800 placeholder-gray-500 focus:outline-none" />
+    </div>
   </div>
-
   <nav class="flex gap-6 items-center relative">
 
     <a routerLink="/home" class="relative flex items-center justify-center w-12 h-12 hover:bg-gray-100 rounded-md">
@@ -24,39 +30,45 @@
       <i class="fas fa-tv text-xl text-gray-600"></i>
     </a>
 
-    <a *ngIf="isAdmin" routerLink="/dashboard-statistics" class="relative flex items-center justify-center w-12 h-12 hover:bg-gray-100 rounded-md">
+    <a *ngIf="isAdmin" routerLink="/dashboard-statistics"
+      class="relative flex items-center justify-center w-12 h-12 hover:bg-gray-100 rounded-md">
       <i class="fas fa-chart-bar text-xl text-blue-600"></i>
     </a>
-    <a *ngIf="isAdmin" routerLink="/dashboard-users" class="relative flex items-center justify-center w-12 h-12 hover:bg-gray-100 rounded-md">
+    <a *ngIf="isAdmin" routerLink="/dashboard-users"
+      class="relative flex items-center justify-center w-12 h-12 hover:bg-gray-100 rounded-md">
       <i class="fas fa-users-cog text-xl text-blue-600"></i>
     </a>
 
     <div class="relative">
-      <button (click)="toggleNotifications()" class="relative flex items-center justify-center w-12 h-12 hover:bg-gray-100 rounded-md">
+      <button (click)="toggleNotifications()"
+        class="relative flex items-center justify-center w-12 h-12 hover:bg-gray-100 rounded-md">
         <i class="fas fa-bell text-xl text-gray-600"></i>
-        <span *ngIf="notifCount > 0" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full px-1.5">
+        <span *ngIf="notifCount > 0"
+          class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full px-1.5">
           {{ notifCount }}
         </span>
       </button>
-      <div
-        *ngIf="notificationsOpen"
+      <div *ngIf="notificationsOpen"
         class="absolute right-0 mt-2 w-64 bg-gray-50 border border-gray-200 rounded-md shadow-lg py-2 z-10">
         <p class="px-4 py-2 text-sm text-gray-800 font-semibold">Notificaciones</p>
         <a class="block px-4 py-2 hover:bg-gray-200 text-sm text-gray-800 cursor-pointer">Te enviaron una solicitud</a>
-        <a class="block px-4 py-2 hover:bg-gray-200 text-sm text-gray-800 cursor-pointer">Nuevo comentario en tu publicación</a>
-        <a class="block px-4 py-2 hover:bg-gray-200 text-sm text-gray-800 cursor-pointer">Alguien reaccionó a tu foto</a>
+        <a class="block px-4 py-2 hover:bg-gray-200 text-sm text-gray-800 cursor-pointer">Nuevo comentario en tu
+          publicación</a>
+        <a class="block px-4 py-2 hover:bg-gray-200 text-sm text-gray-800 cursor-pointer">Alguien reaccionó a tu
+          foto</a>
       </div>
     </div>
 
     <div class="relative">
-      <button (click)="toggleMessages()" class="relative flex items-center justify-center w-12 h-12 hover:bg-gray-100 rounded-md">
+      <button (click)="toggleMessages()"
+        class="relative flex items-center justify-center w-12 h-12 hover:bg-gray-100 rounded-md">
         <i class="fas fa-comment-dots text-xl text-gray-600"></i>
-        <span *ngIf="msgCount > 0" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full px-1.5">
+        <span *ngIf="msgCount > 0"
+          class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full px-1.5">
           {{ msgCount }}
         </span>
       </button>
-      <div
-        *ngIf="messagesOpen"
+      <div *ngIf="messagesOpen"
         class="absolute right-0 mt-2 w-64 bg-gray-50 border border-gray-200 rounded-md shadow-lg py-2 z-10">
         <p class="px-4 py-2 text-sm text-gray-800 font-semibold">Mensajes</p>
         <a class="block px-4 py-2 hover:bg-gray-200 text-sm text-gray-800 cursor-pointer">Juan: ¿Jugamos?</a>
@@ -71,11 +83,11 @@
     <button (click)="toggleMenu()" class="w-10 h-10 rounded-full overflow-hidden border border-gray-300">
       <img [src]="profileImage || 'assets/images/default-avatar.png'" class="w-full h-full object-cover" />
     </button>
-    <div
-      *ngIf="menuOpen"
+    <div *ngIf="menuOpen"
       class="absolute right-0 mt-2 w-48 bg-gray-50 border border-gray-200 rounded-md shadow-lg py-2 z-10">
       <a routerLink="/profile" class="block px-4 py-2 hover:bg-gray-200 text-sm text-gray-800">Mi perfil</a>
-      <a (click)="logout()" class="block px-4 py-2 hover:bg-gray-200 text-sm text-gray-800 cursor-pointer">Cerrar sesión</a>
+      <a (click)="logout()" class="block px-4 py-2 hover:bg-gray-200 text-sm text-gray-800 cursor-pointer">Cerrar
+        sesión</a>
     </div>
   </div>
 </header>
