@@ -50,4 +50,9 @@ export class ProfileHeaderComponent {
     return `${parseInt(day, 10)} de ${monthName} de ${year}`;
   }
 
+  onEditProfile() {
+
+    alert('Abrir modal de edición o navegar a la página de edición');
+  }
+
 }

@@ -8,7 +8,9 @@
       </h2>
       <p class="text-gray-500">&#64;{{ username() }}</p>
     </div>
-    <button class="bg-green-600 text-white px-4 py-1 rounded-full hover:bg-green-700">Editar perfil</button>
+    <button class="bg-green-600 text-white px-4 py-1 rounded-full hover:bg-green-700" (click)="onEditProfile()">
+      Editar perfil
+    </button>
   </div>
   <div class="mt-4 text-gray-700 space-y-2">
     <div class="flex items-center space-x-2 text-sm">
