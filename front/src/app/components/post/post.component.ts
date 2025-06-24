@@ -7,10 +7,11 @@ import { firstValueFrom } from 'rxjs';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 import { CommentCreatorComponent } from '../comment-creator/comment-creator.component';
 import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'app-post',
   standalone: true,
-  imports: [CommonModule,NgIf, NgClass, TimeAgoPipe,CommentCreatorComponent],
+  imports: [CommonModule, NgIf, NgClass, TimeAgoPipe, CommentCreatorComponent],
   templateUrl: './post.component.html',
   styleUrls: ['./post.component.css']
 })
@@ -25,12 +26,14 @@ export class PostComponent {
   addingComment = false;
   isAdmin: boolean = false;
   showCommentModal = false;
-
+  postText: string = '';
+  imageFile: File | null = null;
+  imagePreview: string | null = null;
 
   @Output() postLiked = new EventEmitter<void>();
-  // @Input() post: any;
   @Input() set post(value: any) {
-    if (value && typeof value.createdAt === 'string') {
+    // Asegúrate de que createdAt sea un Date válido
+    if (value && value.createdAt && !(value.createdAt instanceof Date)) {
       value.createdAt = new Date(value.createdAt);
     }
     this._post = value;
@@ -56,8 +59,6 @@ export class PostComponent {
     const username = user?.username || localStorage.getItem('username') || '';
     const role = this.isAdmin ? 'admin' : 'user';
 
-    console.log('postId:', this.post._id, 'commentId:', commentId, 'username:', username, 'role:', role);
-
     this.postService.deleteComment(this.post._id, commentId, username, role)
       .subscribe(() => {
         this.comments = this.comments.filter(comment => comment._id !== commentId);
@@ -71,7 +72,7 @@ export class PostComponent {
     this.interactionsRequested.emit();
   }
 
-   loadComments(reset: boolean = false) {
+  loadComments(reset: boolean = false) {
     if (reset) {
       this.commentsPage = 1;
       this.comments = [];
@@ -85,7 +86,6 @@ export class PostComponent {
       });
   }
 
-  // usuario envia comentario
   onCommentCreated(commentText: string) {
     this.addingComment = true;
     const user = {
@@ -105,7 +105,6 @@ export class PostComponent {
       }, () => this.addingComment = false);
   }
 
-  // Mostrar mas comentarios
   loadMoreComments() {
     this.commentsPage++;
     this.loadComments();
@@ -119,7 +118,6 @@ export class PostComponent {
 
     try {
       const response = await firstValueFrom(this.postService.likePost(post._id, user));
-      console.log('Like exitoso:', response);
       this.postLiked.emit();
     } catch (error) {
       console.error('Error al hacer like:', error);
@@ -141,5 +139,4 @@ export class PostComponent {
     }
     this.showCommentModal = true;
   }
-
 }
