@@ -16,6 +16,12 @@ body {
   @apply bg-[#f0f2f5] text-[#050505] font-sans;
 }
 
+.feed-container {
+  max-width: 620px;
+  margin: 0 auto;
+  width: 100%;
+}
+
 :root {
   --color-principal: #6aba4d;
   --color-fondo: #f0f5f1;
