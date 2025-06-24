@@ -3,7 +3,9 @@
     <img [src]="post.profileImage || 'assets/images/default-avatar.png'" class="w-10 h-10 rounded-full object-cover" />
     <div>
       <p class="font-semibold text-gray-800">{{ post.firstName }} {{ post.lastName }}</p>
-      <p class="text-xs text-gray-500">{{ post.createdAt | timeAgo }}</p>
+      <p class="text-xs text-gray-500">
+        {{ post.createdAt | timeAgo }}
+      </p>
     </div>
   </div>
   <div class="px-3 pb-3">

@@ -5,22 +5,26 @@ import { Pipe, PipeTransform } from '@angular/core';
   standalone: true
 })
 export class TimeAgoPipe implements PipeTransform {
-  transform(value: string | Date): string {
-    const date = new Date(value);
-    const seconds = Math.floor((+new Date() - +date) / 1000);
+  transform(dateString: string): string {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffSec = Math.floor(diffMs / 1000);
+    const diffMin = Math.floor(diffSec / 60);
+    const diffHrs = Math.floor(diffMin / 60);
+    const diffDays = Math.floor(diffHrs / 24);
 
-    if (seconds < 60) return 'hace unos segundos';
-    const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `hace ${minutes} min`;
-    const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `hace ${hours} h`;
-    const days = Math.floor(hours / 24);
-    if (days < 7) return `hace ${days} día${days > 1 ? 's' : ''}`;
-    const weeks = Math.floor(days / 7);
-    if (weeks < 5) return `hace ${weeks} semana${weeks > 1 ? 's' : ''}`;
-    const months = Math.floor(days / 30);
-    if (months < 12) return `hace ${months} mes${months > 1 ? 'es' : ''}`;
-    const years = Math.floor(days / 365);
-    return `hace ${years} año${years > 1 ? 's' : ''}`;
+    if (diffSec < 60) return 'hace unos segundos';
+    if (diffMin < 60) return `hace ${diffMin} min`;
+    if (diffHrs < 24) return `hace ${diffHrs} h`;
+    if (diffDays === 1) return 'ayer';
+    if (diffDays < 7) return `hace ${diffDays} d`;
+
+    return date.toLocaleDateString('es-AR', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    });
   }
 }

@@ -32,8 +32,8 @@ export class PostComponent {
 
   @Output() postLiked = new EventEmitter<void>();
   @Input() set post(value: any) {
-    // Asegúrate de que createdAt sea un Date válido
     if (value && value.createdAt && !(value.createdAt instanceof Date)) {
+      console.log(value.createdAt)
       value.createdAt = new Date(value.createdAt);
     }
     this._post = value;
