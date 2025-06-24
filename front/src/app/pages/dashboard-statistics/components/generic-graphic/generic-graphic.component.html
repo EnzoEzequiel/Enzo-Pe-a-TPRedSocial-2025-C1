@@ -1,0 +1,14 @@
+<div class="flex items-center justify-center w-full h-full" *ngIf="chartOptions">
+  <div class="w-full sm:w-4/5 md:w-3/4 lg:w-2/3 xl:w-1/2 text-black">
+    <apx-chart
+      [series]="chartOptions.series"
+      [chart]="chartOptions.chart"
+      [xaxis]="chartOptions.xaxis"
+      [title]="chartOptions.title"
+      [stroke]="chartOptions.stroke"
+      [dataLabels]="chartOptions.dataLabels"
+      [grid]="chartOptions.grid"
+      [tooltip]="chartOptions.tooltip">
+    </apx-chart>
+  </div>
+</div>

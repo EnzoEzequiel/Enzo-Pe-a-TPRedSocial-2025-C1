@@ -20,6 +20,15 @@
       <i class="fas fa-comment text-lg text-gray-600"></i>
       <span class="text-sm text-gray-600">{{ post.comments?.length || 0 }}</span>
     </button>
+    <button (click)="likePost(post)" class="flex items-center space-x-1 hover:bg-gray-100 px-3 py-1 rounded-full">
+      <i class="fas fa-thumbs-up text-lg"
+         [ngClass]="{'text-blue-600': hasUserLiked(post), 'text-gray-600': !hasUserLiked(post)}"></i>
+      <span class="text-sm text-gray-600">{{ post.likes?.length || 0 }}</span>
+    </button>
+    <!-- <button (click)="eliminateComment()" class="flex items-center space-x-1 hover:bg-gray-100 px-3 py-1 rounded-full">
+      <i class="fas fa-comment text-lg text-gray-600"></i>
+      <span class="text-sm text-gray-600">{{ post.comments?.length || 0 }}</span>
+    </button> -->
   </div>
 
   <div *ngIf="showComments" class="px-3 pb-3 border-t border-gray-100">
