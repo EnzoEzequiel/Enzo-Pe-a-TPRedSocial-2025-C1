@@ -52,6 +52,15 @@ export class Post extends Document {
 
     @Prop({ default: true })
     show: boolean;
+
+    @Prop({ default: false })
+    deleted: boolean;
+
+    @Prop()
+    deletedBy?: string;
+
+    @Prop()
+    deletedAt?: Date;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

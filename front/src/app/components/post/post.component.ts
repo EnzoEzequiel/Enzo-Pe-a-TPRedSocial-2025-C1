@@ -1,22 +1,40 @@
 import { Component, Input, Output, Signal, EventEmitter } from '@angular/core';
-import { NgIf, NgClass } from '@angular/common';
+import { CommonModule, NgIf, NgClass } from '@angular/common';
+import { firstValueFrom } from 'rxjs';
+
+import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
+import { CommentCreatorComponent } from '../comment-creator/comment-creator.component';
+
 import { PostService } from '../../services/post/post.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { User } from '../../models/user.model';
-import { firstValueFrom } from 'rxjs';
-import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
-import { CommentCreatorComponent } from '../comment-creator/comment-creator.component';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-post',
   standalone: true,
-  imports: [CommonModule, NgIf, NgClass, TimeAgoPipe, CommentCreatorComponent],
+  imports: [ CommonModule, NgIf, NgClass, TimeAgoPipe, CommentCreatorComponent ],
   templateUrl: './post.component.html',
   styleUrls: ['./post.component.css']
 })
 export class PostComponent {
-  private _post: any;
+  private _post!: any;
+
+  @Input()
+  set post(value: any) {
+    // Asegura fecha como Date
+    if (value && value.createdAt && !(value.createdAt instanceof Date)) {
+      value.createdAt = new Date(value.createdAt);
+    }
+    this._post = value;
+  }
+  get post(): any {
+    return this._post;
+  }
+
+  @Output() postLiked = new EventEmitter<void>();
+  @Output() postDeleted = new EventEmitter<string>();
+  @Output() interactionsRequested = new EventEmitter<void>();
+
   comments: any[] = [];
   commentsPage = 1;
   commentsLimit = 5;
@@ -24,27 +42,11 @@ export class PostComponent {
   showComments = false;
   loadingComments = false;
   addingComment = false;
-  isAdmin: boolean = false;
   showCommentModal = false;
-  postText: string = '';
-  imageFile: File | null = null;
-  imagePreview: string | null = null;
-
-  @Output() postLiked = new EventEmitter<void>();
-  @Input() set post(value: any) {
-    if (value && value.createdAt && !(value.createdAt instanceof Date)) {
-      console.log(value.createdAt)
-      value.createdAt = new Date(value.createdAt);
-    }
-    this._post = value;
-  }
-
-  get post(): any {
-    return this._post;
-  }
   loading = false;
+
+  isAdmin: boolean;
   userSignal!: Signal<User | null>;
-  @Output() interactionsRequested = new EventEmitter<void>();
 
   constructor(
     private postService: PostService,
@@ -54,22 +56,31 @@ export class PostComponent {
     this.userSignal = this.authService.currentUser;
   }
 
-  eliminateComment(commentId: string) {
+  // — Likes —
+  async likePost(post: any): Promise<void> {
+    this.loading = true;
     const user = this.userSignal();
-    const username = user?.username || localStorage.getItem('username') || '';
-    const role = this.isAdmin ? 'admin' : 'user';
-
-    this.postService.deleteComment(this.post._id, commentId, username, role)
-      .subscribe(() => {
-        this.comments = this.comments.filter(comment => comment._id !== commentId);
-        this.totalComments--;
-      }, error => {
-        console.error('Error al eliminar el comentario:', error);
-      });
+    if (!user) return;
+    try {
+      await firstValueFrom(this.postService.likePost(post._id, user));
+      this.postLiked.emit();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      this.loading = false;
+    }
   }
 
-  onClick() {
-    this.interactionsRequested.emit();
+  hasUserLiked(post: any): boolean {
+    const user = this.userSignal();
+    return !!user && Array.isArray(post.likes) && post.likes.some((l: any) => l.username === user.username);
+  }
+
+  // — Comentarios —
+  toggleComments() {
+    this.showComments = !this.showComments;
+    if (this.showComments) this.loadComments(true);
+    this.showCommentModal = true;
   }
 
   loadComments(reset: boolean = false) {
@@ -83,25 +94,23 @@ export class PostComponent {
         this.comments = reset ? res.comments : [...this.comments, ...res.comments];
         this.totalComments = res.total;
         this.loadingComments = false;
-      });
+      }, () => this.loadingComments = false);
   }
 
-  onCommentCreated(commentText: string) {
+  onCommentCreated(text: string) {
     this.addingComment = true;
-    const user = {
-      username: localStorage.getItem('username'),
-      firstName: localStorage.getItem('firstName'),
-      lastName: localStorage.getItem('lastName'),
-      profileImage: localStorage.getItem('profileImage')
-    };
+    const user = this.userSignal();
     const newComment = {
-      ...user,
-      content: commentText
+      username: user?.username || '',
+      firstName: user?.firstName || '',
+      lastName: user?.lastName || '',
+      profileImage: user?.profileImage || '',
+      content: text
     };
     this.postService.addComment(this.post._id, newComment)
       .subscribe(() => {
         this.addingComment = false;
-        this.loadComments(true); // Recarga comentarios desde el principio
+        this.loadComments(true);
       }, () => this.addingComment = false);
   }
 
@@ -110,33 +119,28 @@ export class PostComponent {
     this.loadComments();
   }
 
-  async likePost(post: any): Promise<void> {
-    this.loading = true;
+  eliminateComment(commentId: string) {
     const user = this.userSignal();
+    const username = user?.username || '';
+    const role = this.isAdmin ? 'admin' : 'user';
+    this.postService.deleteComment(this.post._id, commentId, username, role)
+      .subscribe(() => {
+        this.comments = this.comments.filter(c => c._id !== commentId);
+        this.totalComments--;
+      }, err => console.error(err));
+  }
 
-    if (!user) return;
-
+  // — Soft-delete de post —
+  async eliminatePost(): Promise<void> {
+    if (!confirm('¿Eliminar este post?')) return;
+    const user = this.userSignal();
+    const username = user?.username || '';
+    const role = this.isAdmin ? 'admin' : 'user';
     try {
-      const response = await firstValueFrom(this.postService.likePost(post._id, user));
-      this.postLiked.emit();
-    } catch (error) {
-      console.error('Error al hacer like:', error);
-    } finally {
-      this.loading = false;
+      await firstValueFrom(this.postService.softDeletePost(this.post._id, username, role));
+      this.postDeleted.emit(this.post._id);
+    } catch (err) {
+      console.error('Error al eliminar post:', err);
     }
-  }
-
-  hasUserLiked(post: any): boolean {
-    const user = this.userSignal();
-    if (!user || !post.likes) return false;
-    return post.likes.some((like: { username: string }) => like.username === user.username);
-  }
-
-  toggleComments() {
-    this.showComments = !this.showComments;
-    if (this.showComments) {
-      this.loadComments(true);
-    }
-    this.showCommentModal = true;
   }
 }

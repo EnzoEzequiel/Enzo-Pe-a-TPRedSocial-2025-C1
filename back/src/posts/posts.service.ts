@@ -162,6 +162,18 @@ export class PostsService {
     //     await post.save();
     //     return comment;
     // }
+
+    async softDeletePost(id: string, username: string, role: string) {
+        if (role !== 'admin') {
+            throw new ForbiddenException('Solo admin puede eliminar posts');
+        }
+        const post = await this.postModel.findById(id);
+        if (!post) throw new NotFoundException('Post no encontrado');
+        post.deleted = true;
+        post.deletedBy = username;
+        post.deletedAt = new Date();
+        return post.save();
+    }
     async addComment(postId: string, commentData: CreateCommentDto) {
         const post = await this.postModel.findById(postId);
         if (!post) throw new BadRequestException('No se encontró el post');

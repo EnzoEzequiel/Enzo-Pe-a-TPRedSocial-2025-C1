@@ -1,59 +1,77 @@
-<div class="bg-white rounded-lg shadow mb-6">
+<div *ngIf="!post.deleted" class="bg-white rounded-lg shadow mb-6 relative">
+
+  <!-- Eliminar Post (solo admin) -->
+  <button *ngIf="isAdmin"
+          (click)="eliminatePost()"
+          class="absolute top-2 right-2 p-1 rounded-full hover:bg-red-100 focus:outline-none"
+          title="Eliminar post">
+    <i class="fas fa-trash-alt text-red-500 text-xl"></i>
+  </button>
+
+  <!-- Cabecera -->
   <div class="flex items-center p-3">
-    <img [src]="post.profileImage || 'assets/images/default-avatar.png'" class="w-10 h-10 rounded-full object-cover" />
-    <div>
+    <img [src]="post.profileImage || 'assets/images/default-avatar.png'"
+         class="w-10 h-10 rounded-full object-cover" />
+    <div class="ml-3">
       <p class="font-semibold text-gray-800">{{ post.firstName }} {{ post.lastName }}</p>
-      <p class="text-xs text-gray-500">
-        {{ post.createdAt | timeAgo }}
-      </p>
+      <p class="text-xs text-gray-500">{{ post.createdAt | timeAgo }}</p>
     </div>
   </div>
+
+  <!-- Contenido -->
   <div class="px-3 pb-3">
     <p class="text-gray-800 mb-2">{{ post.content }}</p>
     <img *ngIf="post.image" [src]="post.image" class="w-full rounded-lg" />
   </div>
+
+  <!-- Likes y comentarios -->
   <div class="flex items-center justify-around border-t border-gray-200 py-2">
-    <button (click)="likePost(post)" class="flex items-center space-x-1 hover:bg-gray-100 px-3 py-1 rounded-full">
+    <button (click)="likePost(post)"
+            class="flex items-center space-x-1 hover:bg-gray-100 px-3 py-1 rounded-full">
       <i class="fas fa-thumbs-up text-lg"
          [ngClass]="{'text-blue-600': hasUserLiked(post), 'text-gray-600': !hasUserLiked(post)}"></i>
       <span class="text-sm text-gray-600">{{ post.likes?.length || 0 }}</span>
     </button>
-    <button (click)="toggleComments()" class="flex items-center space-x-1 hover:bg-gray-100 px-3 py-1 rounded-full">
+    <button (click)="toggleComments()"
+            class="flex items-center space-x-1 hover:bg-gray-100 px-3 py-1 rounded-full">
       <i class="fas fa-comment text-lg text-gray-600"></i>
       <span class="text-sm text-gray-600">{{ post.comments?.length || 0 }}</span>
     </button>
   </div>
 
+  <!-- Sección de comentarios -->
   <div *ngIf="showComments" class="px-3 pb-3 border-t border-gray-100">
-      <app-comment-creator
-        *ngIf="showCommentModal"
-        (commentCreated)="onCommentCreated($event)"
-        (closeModal)="showCommentModal = false"
-        [disabled]="addingComment">
-      </app-comment-creator>
+    <app-comment-creator
+      *ngIf="showCommentModal"
+      (commentCreated)="onCommentCreated($event)"
+      (closeModal)="showCommentModal = false"
+      [disabled]="addingComment">
+    </app-comment-creator>
 
-    <div *ngIf="loadingComments" class="my-2 text-gray-500">Cargando comentarios...</div>
+    <div *ngIf="loadingComments" class="my-2 text-gray-500">
+      Cargando comentarios...
+    </div>
+
     <div *ngFor="let c of comments" class="my-2">
       <div class="flex items-center space-x-2">
-        <img [src]="c.profileImage || 'assets/images/default-avatar.png'" class="w-6 h-6 rounded-full object-cover" />
+        <img [src]="c.profileImage || 'assets/images/default-avatar.png'"
+             class="w-6 h-6 rounded-full object-cover" />
         <strong class="text-sm text-gray-800">{{ c.firstName }} {{ c.lastName }}</strong>
         <span class="text-xs text-gray-500">&commat;{{ c.username }}</span>
-        <span style="font-size:0.8em;color:#888;">{{ c.date | date: 'short' }}</span>
-        <button
-          *ngIf="isAdmin"
-          (click)="eliminateComment(c._id)"
-          class="ml-2 p-1 rounded-full hover:bg-red-100 focus:outline-none"
-          title="Eliminar comentario">
+        <span class="text-xs text-gray-400">{{ c.date | date:'short' }}</span>
+        <button *ngIf="isAdmin"
+                (click)="eliminateComment(c._id)"
+                class="ml-2 p-1 rounded-full hover:bg-red-100 focus:outline-none"
+                title="Eliminar comentario">
           <i class="fas fa-trash-alt text-red-500 text-base"></i>
         </button>
       </div>
       <div class="ml-8 text-gray-700 text-sm">{{ c.content }}</div>
     </div>
 
-    <button
-      *ngIf="comments.length < totalComments && !loadingComments"
-      (click)="loadMoreComments()"
-      class="mt-2 px-4 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm text-gray-700">
+    <button *ngIf="comments.length < totalComments && !loadingComments"
+            (click)="loadMoreComments()"
+            class="mt-2 px-4 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm text-gray-700">
       Cargar más comentarios
     </button>
   </div>

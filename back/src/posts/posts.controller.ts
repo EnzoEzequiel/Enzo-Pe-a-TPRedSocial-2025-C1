@@ -136,6 +136,15 @@ export class PostsController {
   ) {
     return this.postsService.deleteComment(postId, commentId, username, role);
   }
+
+  @Delete(':id')
+  async softDelete(
+    @Param('id') id: string,
+    @Query('username') username: string,
+    @Query('role') role: string
+  ) {
+    return this.postsService.softDeletePost(id, username, role);
+  }
   // @Put('comment/:postId/:commentId')
   // @Roles('user', 'admin')
   // async editComment(

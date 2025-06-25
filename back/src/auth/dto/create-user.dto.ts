@@ -48,7 +48,7 @@ export class CreateUserDto {
 
     @IsOptional()
     @IsString()
-    role?: string; // 'user' or 'admin'
+    role?: string; // 'user' o 'admin'
 
     @IsDateString()
     createdAt: Date;
