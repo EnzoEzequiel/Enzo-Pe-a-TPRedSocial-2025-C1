@@ -5,9 +5,10 @@ import { Pipe, PipeTransform } from '@angular/core';
   standalone: true
 })
 export class TimeAgoPipe implements PipeTransform {
-  transform(dateString: string): string {
-    if (!dateString) return '';
-    const date = new Date(dateString);
+  transform(value: string | Date): string {
+    if (!value) return '';
+    const date = value instanceof Date ? value : new Date(value);
+    if (isNaN(date.getTime())) return '';
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffSec = Math.floor(diffMs / 1000);

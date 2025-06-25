@@ -1,1 +1,162 @@
-<p>dashboard-users works!</p>
+<!-- src/app/pages/dashboard-users/dashboard-users.component.html -->
+<div class="min-h-screen bg-white text-gray-800">
+
+  <!-- Header Navbar (igual que Estadísticas) -->
+  <header class="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center shadow-sm sticky top-0 z-40">
+    <h1 class="text-xl font-bold text-green-600">Panel de Usuarios</h1>
+    <div class="flex gap-4">
+      <a routerLink="/home" class="text-green-600 hover:underline">Inicio</a>
+      <a routerLink="/dashboard-statistics" class="text-green-600 hover:underline">Estadísticas</a>
+    </div>
+  </header>
+
+  <div class="max-w-5xl mx-auto p-6 space-y-8">
+
+    <!-- Toggle Formularios -->
+    <button (click)="showForm = !showForm"
+            class="flex items-center text-gray-600 hover:text-green-600 transition">
+      <span class="material-icons mr-1">
+        {{ showForm ? 'expand_less' : 'expand_more' }}
+      </span>
+      {{ showForm ? 'Ocultar' : 'Mostrar' }} formulario de creación
+    </button>
+
+    <!-- Form Crear Usuario -->
+    <form *ngIf="showForm"
+          [formGroup]="form"
+          (ngSubmit)="onSubmit()"
+          class="bg-white p-8 rounded-xl shadow-lg grid grid-cols-1 md:grid-cols-2 gap-6">
+      <h2 class="col-span-full text-2xl font-bold text-green-600">Crear Nuevo Usuario</h2>
+
+      <div>
+        <input formControlName="firstName" placeholder="Nombre"
+          class="w-full bg-gray-100 border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-green-400" />
+        <small class="text-red-500" *ngIf="form.get('firstName')?.touched && form.get('firstName')?.invalid">
+          Requerido, mínimo 3 caracteres.
+        </small>
+      </div>
+
+      <div>
+        <input formControlName="lastName" placeholder="Apellido"
+          class="w-full bg-gray-100 border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-green-400" />
+        <small class="text-red-500" *ngIf="form.get('lastName')?.touched && form.get('lastName')?.invalid">
+          Requerido, mínimo 3 caracteres.
+        </small>
+      </div>
+
+      <div class="md:col-span-2">
+        <input formControlName="email" type="email" placeholder="Correo electrónico"
+          class="w-full bg-gray-100 border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-green-400" />
+        <small class="text-red-500" *ngIf="form.get('email')?.touched && form.get('email')?.invalid">
+          Debe ser un correo válido.
+        </small>
+      </div>
+
+      <div>
+        <input formControlName="username" placeholder="Usuario"
+          class="w-full bg-gray-100 border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-green-400" />
+        <small class="text-red-500" *ngIf="form.get('username')?.touched && form.get('username')?.invalid">
+          Requerido, mínimo 3 caracteres.
+        </small>
+      </div>
+
+      <div>
+        <select formControlName="role"
+          class="w-full bg-gray-100 border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-green-400">
+          <option value="usuario">Usuario</option>
+          <option value="administrador">Administrador</option>
+        </select>
+      </div>
+
+      <div class="md:col-span-2">
+        <input formControlName="password" type="password" placeholder="Contraseña"
+          class="w-full bg-gray-100 border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-green-400" />
+        <small class="text-red-500" *ngIf="form.get('password')?.touched && form.get('password')?.invalid">
+          Requerido, mínimo 8 caracteres.
+        </small>
+      </div>
+
+      <button type="submit"
+        [disabled]="form.invalid"
+        class="col-span-full py-3 bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-700 transition">
+        <span class="material-icons align-middle mr-1">person_add</span>
+        Crear Usuario
+      </button>
+    </form>
+
+    <!-- Toggle Listado -->
+    <button (click)="showList = !showList"
+            class="flex items-center text-gray-600 hover:text-green-600 transition">
+      <span class="material-icons mr-1">
+        {{ showList ? 'expand_less' : 'expand_more' }}
+      </span>
+      {{ showList ? 'Ocultar' : 'Mostrar' }} listado de usuarios
+    </button>
+
+    <!-- Listado de Usuarios -->
+    <div *ngIf="showList" class="bg-white p-6 rounded-xl shadow-lg space-y-4">
+      <h2 class="text-2xl font-bold text-green-600">Usuarios</h2>
+
+      <ng-container *ngIf="!loading; else loadingTpl">
+
+        <!-- Activos -->
+        <div *ngIf="activeUsers.length">
+          <h3 class="text-lg font-semibold mb-2">Activos</h3>
+          <div class="space-y-2">
+            <div *ngFor="let u of activeUsers"
+              class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div class="flex items-center space-x-3">
+                <img *ngIf="u.profileImage" [src]="u.profileImage"
+                  class="w-10 h-10 rounded-full border" alt="Foto" />
+                <div>
+                  <p class="font-medium">{{ u.firstName }} {{ u.lastName }}</p>
+                  <p class="text-sm text-gray-500">{{ u.email }}</p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-2">
+                <button (click)="toggleActive(u)"
+                  class="py-1 px-3 rounded-full border-2 border-yellow-500 text-yellow-500 hover:bg-yellow-50 transition">
+                  <span class="material-icons align-middle">refresh</span>
+                </button>
+                <button (click)="deleteUser(u)"
+                  class="py-1 px-3 rounded-full border-2 border-red-500 text-red-500 hover:bg-red-50 transition">
+                  <span class="material-icons align-middle">delete</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inactivos -->
+        <div *ngIf="inactiveUsers.length">
+          <h3 class="text-lg font-semibold mt-6 mb-2">Inactivos</h3>
+          <div class="space-y-2">
+            <div *ngFor="let u of inactiveUsers"
+              class="flex items-center justify-between p-4 bg-gray-50 rounded-lg opacity-75">
+              <div class="flex items-center space-x-3">
+                <img *ngIf="u.profileImage" [src]="u.profileImage"
+                  class="w-10 h-10 rounded-full border" alt="Foto" />
+                <div>
+                  <p class="font-medium line-through">{{ u.firstName }} {{ u.lastName }}</p>
+                  <p class="text-sm text-gray-500">{{ u.email }}</p>
+                </div>
+              </div>
+              <button (click)="toggleActive(u)"
+                class="py-1 px-4 rounded-full border-2 border-green-600 text-green-600 hover:bg-green-50 transition">
+                Reactivar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="users.length === 0" class="text-center text-gray-400 py-6">
+          No hay usuarios para mostrar.
+        </div>
+      </ng-container>
+
+      <ng-template #loadingTpl>
+        <p class="text-center text-gray-400 py-6">Cargando usuarios…</p>
+      </ng-template>
+    </div>
+  </div>
+</div>

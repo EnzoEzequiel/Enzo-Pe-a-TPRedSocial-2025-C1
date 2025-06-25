@@ -4,30 +4,53 @@ import { Observable } from 'rxjs';
 import { User } from '../../models/user.model';
 import { environment } from '../../../environments/environment';
 
+export type { User };
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  private apiUrl = environment.apiUrl + '/users';
+  private apiUrl = `${environment.apiUrl}/users`;
 
   constructor(private http: HttpClient) { }
 
+
   getUsersForAside(username: string): Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiUrl}`, {
-      params: { username: username }
+    return this.http.get<User[]>(this.apiUrl, {
+      params: { username }
     });
   }
-  // async getFriends(userId: string): Observable<User[]> {
-  //   const user = await this.User.findById(userId).populate('friends', '-password');
-  //   if (!user) {
-  //     throw new NotFoundException('Usuario no encontrado');
-  //   }
-  //   return user.friends;
-  // }
-  getFriends(userId: string) {
-    return this.http.get<User[]>(`${this.apiUrl}/users/friends/${userId}`);
+
+
+  listUsers(): Observable<User[]> {
+    return this.http.get<User[]>(this.apiUrl);
   }
 
+
+  disableUser(userId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${userId}`);
+  }
+
+
+  enableUser(userId: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/${userId}/enable`, {});
+  }
+
+
+  createUser(data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    username: string;
+    password: string;
+    role: 'usuario' | 'administrador';
+  }): Observable<User> {
+    return this.http.post<User>(this.apiUrl, data);
+  }
+
+
+  getFriends(userId: string): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}/friends/${userId}`);
+  }
 
 }

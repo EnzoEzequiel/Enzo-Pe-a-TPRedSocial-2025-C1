@@ -1,45 +1,38 @@
-<div class="flex flex-col h-screen overflow-y-auto bg-black text-white sm:w-screen">
-  <!-- Flecha para volver -->
-  <div class="flex flex-col items-center w-full p-4 text-white">
-
-    <!-- Navegación -->
-    <div class="flex justify-between w-full mb-6">
-      <a routerLink="/home" class="flex items-center text-white hover:text-blue-400 transition">
-        <span class="material-icons text-3xl">arrow_back</span>
-        <span class="ml-2 text-lg">Ir a Inicio</span>
-      </a>
-      <a routerLink="/dashboard-users" class="flex items-center text-white hover:text-blue-400 transition gap-2">
-        <span class="ml-2 text-lg">Ir a Usuarios</span>
-        <span class="material-icons text-3xl">arrow_forward</span>
-      </a>
+<div class="min-h-screen bg-white text-gray-800">
+  <!-- Header Navbar -->
+  <header class="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center shadow-sm sticky top-0 z-40">
+    <h1 class="text-xl font-bold text-green-600">Panel de Estadísticas</h1>
+    <div class="flex gap-4">
+      <a routerLink="/home" class="text-green-600 hover:underline">Inicio</a>
+      <a routerLink="/dashboard-users" class="text-green-600 hover:underline">Usuarios</a>
     </div>
+  </header>
 
-    <!-- Tabs -->
-    <div class="flex space-x-4 mb-6 border-b border-gray-600">
-      <button (click)="changeTab(1)"
-        [ngClass]="selectedTab === 1 ? 'border-b-2 border-blue-400 text-blue-400' : 'text-gray-400'"
-        class="px-4 py-2 transition cursor-pointer">
-        Publicaciones por usuario
-      </button>
-      <button (click)="changeTab(2)"
-        [ngClass]="selectedTab === 2 ? 'border-b-2 border-blue-400 text-blue-400' : 'text-gray-400'"
-        class="px-4 py-2 transition cursor-pointer">
-        Comentarios totales
-      </button>
-      <button (click)="changeTab(3)"
-        [ngClass]="selectedTab === 3 ? 'border-b-2 border-blue-400 text-blue-400' : 'text-gray-400'"
-        class="px-4 py-2 transition cursor-pointer">
-        Comentarios por post
-      </button>
-    </div>
+  <!-- Tabs -->
+  <div class="flex justify-center mt-6 space-x-6 border-b border-gray-300 pb-2">
+    <button (click)="changeTab(1)"
+      [ngClass]="selectedTab === 1 ? 'border-b-2 border-green-500 text-green-600 font-semibold' : 'text-gray-500'"
+      class="pb-1 transition-all">
+      Publicaciones por usuario
+    </button>
+    <button (click)="changeTab(2)"
+      [ngClass]="selectedTab === 2 ? 'border-b-2 border-green-500 text-green-600 font-semibold' : 'text-gray-500'"
+      class="pb-1 transition-all">
+      Comentarios totales
+    </button>
+    <button (click)="changeTab(3)"
+      [ngClass]="selectedTab === 3 ? 'border-b-2 border-green-500 text-green-600 font-semibold' : 'text-gray-500'"
+      class="pb-1 transition-all">
+      Comentarios por publicación
+    </button>
+  </div>
 
-    <!-- Gráficos -->
-    <div class="w-full p-6 mt-4">
-      <app-chart-filter (rangeChange)="OnChangeRange($event)"></app-chart-filter>
+  <!-- Filtros y gráfico -->
+  <div class="max-w-5xl mx-auto px-4 py-8">
+    <app-chart-filter (rangeChange)="OnChangeRange($event)"></app-chart-filter>
 
-      <app-generic-graphic *ngIf="selectedTab === 1" [chartOptions]="chartOptions"></app-generic-graphic>
-      <app-generic-graphic *ngIf="selectedTab === 2" [chartOptions]="chartOptions"></app-generic-graphic>
-      <app-generic-graphic *ngIf="selectedTab === 3" [chartOptions]="chartOptions"></app-generic-graphic>
-    </div>
+    <app-generic-graphic *ngIf="chartOptions" [chartOptions]="chartOptions"></app-generic-graphic>
+
+    <div *ngIf="!chartOptions" class="text-center text-gray-400 mt-10">No hay datos disponibles.</div>
   </div>
 </div>

@@ -87,14 +87,14 @@ export class DashboardStatisticsComponent {
 
   private buildChartOptions(categories: string[], data: number[]): ChartOptions {
     return {
-      chart: { type: 'bar' as ChartType },
+      chart: { type: 'line' as ChartType, height: 350, toolbar: { show: false } },
       series: [{ name: this.title, data }],
       xaxis: {
         categories,
         title: { text: this.selectedTab === 3 ? 'Publicaciones' : 'Usuarios' }
       },
       title: { text: this.title },
-      stroke: { curve: 'smooth' },
+      stroke: { curve: 'smooth', width: 2 },
       dataLabels: { enabled: true },
       grid: { row: { colors: ['#f3f3f3', 'transparent'], opacity: 0.2 } },
       tooltip: {},
@@ -138,7 +138,7 @@ export class DashboardStatisticsComponent {
       }
 
       this.chartOptions = {
-        chart: { type: 'bar' as ChartType },
+        chart: { type: 'line' as ChartType, height: 350, toolbar: { show: false } },
         series: [{ name: this.title, data: counts }],
         xaxis: {
           categories: labels,
