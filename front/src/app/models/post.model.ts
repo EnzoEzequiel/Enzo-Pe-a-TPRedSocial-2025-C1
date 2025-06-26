@@ -14,6 +14,7 @@ export interface Like {
 }
 
 export interface Post {
+    _id?: string;
     firstName: string;
     lastName: string;
     profileImage: string;

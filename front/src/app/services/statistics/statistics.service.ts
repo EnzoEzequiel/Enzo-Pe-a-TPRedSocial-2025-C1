@@ -19,4 +19,14 @@ export class StatisticsService {
   getStatistics(tab: number, range: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}?tab=${tab}&range=${range}`);
   }
+
+  getPostsByUser(from: string, to: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/posts-by-user`, { params: { from, to } });
+  }
+  getCommentsByDate(from: string, to: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/comments-by-date`, { params: { from, to } });
+  }
+  getCommentsByPost(from: string, to: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/comments-by-post`, { params: { from, to } });
+  }
 }

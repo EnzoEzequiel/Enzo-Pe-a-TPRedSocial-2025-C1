@@ -10,7 +10,8 @@ import {
   Param,
   Get,
   Delete,
-  // Put,
+  Put,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PostsService } from './posts.service';
@@ -20,15 +21,21 @@ import { CreateLikeDto } from './dto/create-like.dto';
 // import { UpdateCommentDto } from './dto/update-comment.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { Roles } from '../auth/roles.decorator';
+import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
 
 @Controller('posts')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class PostsController {
   constructor(
     private readonly postsService: PostsService,
     private readonly cloudinaryService: CloudinaryService,
-  ) {}
+  ) {
+    console.log('[PostsController] Inicializado');
+  }
 
   @Post('create')
+  @Roles('admin', 'user')
   @UseInterceptors(FileInterceptor('image'))
   async createPost(
     @UploadedFile() file: Express.Multer.File,
@@ -88,6 +95,7 @@ export class PostsController {
   // }
 
   @Post('like/:postId')
+  @Roles('admin', 'user')
   async likePost(
     @Param('postId') postId: string,
     @Body() createLikeDto: CreateLikeDto,
@@ -111,6 +119,7 @@ export class PostsController {
   }
 
   @Post(':postId/comment')
+  @Roles('admin', 'user')
   async addComment(
     @Param('postId') postId: string,
     @Body() createCommentDto: CreateCommentDto
@@ -128,6 +137,7 @@ export class PostsController {
   }
 
   @Delete(':postId/comments/:commentId')
+  @Roles('admin', 'user')
   async deleteComment(
     @Param('postId') postId: string,
     @Param('commentId') commentId: string,
@@ -138,6 +148,7 @@ export class PostsController {
   }
 
   @Delete(':id')
+  @Roles('admin')
   async softDelete(
     @Param('id') id: string,
     @Query('username') username: string,
@@ -145,15 +156,32 @@ export class PostsController {
   ) {
     return this.postsService.softDeletePost(id, username, role);
   }
-  // @Put('comment/:postId/:commentId')
-  // @Roles('user', 'admin')
-  // async editComment(
-  //   @Param('postId') postId: string,
-  //   @Param('commentId') commentId: string,
-  //   @Body() updateCommentDto: UpdateCommentDto,
-  //   @Body('username') username: string,
-  //   @Body('role') role: string,
-  // ) {
-  //   return this.postsService.editComment(postId, commentId, updateCommentDto, username, role);
-  // }
+  @Get('paginated')
+  async getPaginatedPosts(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('order') order: string = 'date',
+    @Query('username') username?: string
+  ) {
+    console.log('[PostsController] getPaginatedPosts llamada con:', { page, limit, order, username });
+    return this.postsService.getPaginatedPosts(page, limit, order, username);
+  }
+
+  @Delete('like/:postId')
+  async removeLike(
+    @Param('postId') postId: string,
+    @Body('username') username: string
+  ) {
+    return this.postsService.removeLike(postId, username);
+  }
+
+  @Put(':postId/comments/:commentId')
+  @Roles('admin', 'user')
+  async editComment(
+    @Param('postId') postId: string,
+    @Param('commentId') commentId: string,
+    @Body() updateCommentDto: { content: string, username: string, role: string }
+  ) {
+    return this.postsService.editComment(postId, commentId, updateCommentDto);
+  }
 }

@@ -58,4 +58,10 @@ export class PostService {
       { params: { username, role } }
     );
   }
+
+  getPaginatedPosts(page = 1, limit = 5, order: 'date' | 'likes' = 'date'): Observable<{ posts: Post[]; total: number }> {
+    return this.http.get<{ posts: Post[]; total: number }>(`${this.apiUrl}/paginated`, {
+      params: { page, limit, order }
+    });
+  }
 }

@@ -75,4 +75,6 @@
       Cargar más comentarios
     </button>
   </div>
+
+  <app-modal *ngIf="showModal" [message]="modalMessage" (close)="closeModal()"></app-modal>
 </div>

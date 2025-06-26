@@ -1,11 +1,16 @@
 <div class="feed-container">
   <app-post-creator (postCreated)="onPostCreated()"></app-post-creator>
   <div *ngIf="loading"><app-spinner></app-spinner></div>
+  <div class="flex justify-end gap-2 mb-4">
+    <button (click)="onOrderChange('date')" [class.font-bold]="order==='date'">Más recientes</button>
+    <button (click)="onOrderChange('likes')" [class.font-bold]="order==='likes'">Más populares</button>
+  </div>
   <div *ngIf="!loading">
     <app-post *ngFor="let post of posts"
     [post]="post"
     (postLiked)="onPostLiked()"
     (interactionsRequested)="openPostInteractions(post)">
     </app-post>
+    <button *ngIf="posts.length < totalPosts" (click)="onLoadMore()" class="mt-4 px-4 py-2 bg-emerald-500 text-white rounded">Cargar más</button>
   </div>
 </div>

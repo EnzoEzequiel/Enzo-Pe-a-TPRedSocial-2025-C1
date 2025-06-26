@@ -41,4 +41,18 @@ export class UsersService {
         if (!user) throw new NotFoundException('Usuario no encontrado');
         return user.friends;
     }
+
+    async disable(id: string): Promise<void> {
+        const user = await this.userModel.findById(id).exec();
+        if (!user) throw new NotFoundException('Usuario no encontrado para deshabilitar');
+        user.show = false;
+        await user.save();
+    }
+
+    async enable(id: string): Promise<void> {
+        const user = await this.userModel.findById(id).exec();
+        if (!user) throw new NotFoundException('Usuario no encontrado para habilitar');
+        user.show = true;
+        await user.save();
+    }
 }

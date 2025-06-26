@@ -3,6 +3,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractContro
 import { NgIf } from '@angular/common';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { firstValueFrom } from 'rxjs';
+import { ModalComponent } from '../../../../components/modal/modal.component';
 
 function passwordMatchValidator(form: AbstractControl) {
   const password = form.get('password')?.value;
@@ -25,7 +26,7 @@ function birthDateValidator(control: AbstractControl) {
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf],
+  imports: [ReactiveFormsModule, NgIf, ModalComponent],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
@@ -38,6 +39,9 @@ export class RegisterComponent {
 
   minBirthDate: string = '';
   maxBirthDate: string = '';
+
+  modalMessage: string = '';
+  showModal: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -74,11 +78,11 @@ export class RegisterComponent {
   async register(): Promise<void> {
     this.errorMessage = '';
     this.successMessage = '';
-
-    this.registerForm.markAllAsTouched(); // ⬅️ fuerza validación visual
+    this.registerForm.markAllAsTouched();
 
     if (this.registerForm.invalid) {
-      this.errorMessage = 'Por favor completa el formulario correctamente';
+      this.modalMessage = 'Por favor completa el formulario correctamente';
+      this.showModal = true;
       return;
     }
 
@@ -100,14 +104,17 @@ export class RegisterComponent {
 
     try {
       await firstValueFrom(this.authService.register(formData));
-      this.successMessage = 'Usuario registrado correctamente';
+      this.modalMessage = 'Usuario registrado correctamente';
+      this.showModal = true;
       this.registerForm.reset();
       await this.authService.login(formValue.username, formValue.password);
     } catch (error: any) {
-      console.error(error);
-      this.errorMessage = error.error?.message || 'Error al registrar usuario';
+      this.modalMessage = error.error?.message || 'Error al registrar usuario';
+      this.showModal = true;
     }
   }
+
+  closeModal() { this.showModal = false; }
 
   onFileSelected(event: any) {
     const file = event.target.files[0];

@@ -9,10 +9,11 @@ import { CommonModule } from '@angular/common';
 import { SpinnerService } from './services/spinner.service';
 import { AuthService } from './services/auth/auth.service';
 import { SpinnerComponent } from './components/spinner/spinner.component';
+import { ModalComponent } from './components/modal/modal.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavbarComponent, AsideComponent,FooterComponent,CommonModule,SpinnerComponent],
+  imports: [RouterOutlet, NavbarComponent, AsideComponent,FooterComponent,CommonModule,SpinnerComponent, ModalComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -20,7 +21,11 @@ export class AppComponent {
   showNavbarAndFooter: boolean = false;
   loading;
   sessionModalOpen = false;
-  sessionTimerDuration = 10 * 60 * 1000; // 10 minutes
+  sessionWarningTimeout: any;
+  sessionWarningDuration = 10 * 60 * 1000; // 10 minutos
+  sessionMaxDuration = 15 * 60 * 1000; // 15 minutos
+  globalErrorMessage: string = '';
+  showGlobalErrorModal: boolean = false;
 
   /**
    * Constructor de la clase AppComponent.
@@ -49,15 +54,19 @@ export class AppComponent {
       if (!valid) {
         this.router.navigate(['/auth']);
       } else {
-        this.startSessionTimer();
+        this.startSessionTimers();
       }
     });
   }
 
-  startSessionTimer() {
-    this.auth.startSessionTimer(this.sessionTimerDuration, () => {
+  startSessionTimers() {
+    if (this.sessionWarningTimeout) clearTimeout(this.sessionWarningTimeout);
+    this.auth.clearSessionTimer();
+    this.sessionWarningTimeout = setTimeout(() => {
       this.sessionModalOpen = true;
-    });
+      // Si el usuario no responde en 5 minutos, cerrar sesión automáticamente
+      this.auth.startSessionTimer(5 * 60 * 1000, () => this.cancelSession());
+    }, this.sessionWarningDuration);
   }
 
   extendSession() {
@@ -66,7 +75,7 @@ export class AppComponent {
       this.spinner.hide();
       if (token) {
         this.sessionModalOpen = false;
-        this.startSessionTimer();
+        this.startSessionTimers();
       } else {
         this.router.navigate(['/auth']);
       }
@@ -76,5 +85,13 @@ export class AppComponent {
   cancelSession() {
     this.sessionModalOpen = false;
     this.auth.logout();
+  }
+
+  showErrorModal(message: string) {
+    this.globalErrorMessage = message;
+    this.showGlobalErrorModal = true;
+  }
+  closeGlobalErrorModal() {
+    this.showGlobalErrorModal = false;
   }
 }

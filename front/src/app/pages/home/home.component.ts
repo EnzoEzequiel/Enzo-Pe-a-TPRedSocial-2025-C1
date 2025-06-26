@@ -14,6 +14,10 @@ import { SpinnerComponent } from '../../components/spinner/spinner.component';
 export class HomeComponent implements OnInit, OnDestroy {
   loading = false;
   posts: any[] = [];
+  totalPosts = 0;
+  page = 1;
+  limit = 5;
+  order: 'date' | 'likes' = 'date';
   username = localStorage.getItem('username') || '';
   selectedPost: any = null;
   private intervalId: any;
@@ -50,12 +54,25 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.loadPosts();
   }
 
-  private loadPosts(): void {
-    this.postService.getPosts().subscribe((data) => {
-      this.posts = data.map(post => {
-        post.date = this.formatTimeAgo(post.date);
-        return post;
-      });
+  onOrderChange(order: 'date' | 'likes') {
+    this.order = order;
+    this.page = 1;
+    this.loadPosts();
+  }
+  onLoadMore() {
+    this.page++;
+    this.loadPosts(false);
+  }
+  private loadPosts(reset: boolean = true): void {
+    this.loading = true;
+    this.postService.getPaginatedPosts(this.page, this.limit, this.order).subscribe((res) => {
+      if (reset) {
+        this.posts = res.posts;
+      } else {
+        this.posts = [...this.posts, ...res.posts];
+      }
+      this.totalPosts = res.total;
+      this.loading = false;
     });
   }
 

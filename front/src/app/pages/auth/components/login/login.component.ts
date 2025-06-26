@@ -4,11 +4,12 @@ import { NgClass, NgIf } from '@angular/common';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { lastValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
+import { ModalComponent } from '../../../../components/modal/modal.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf, NgClass],
+  imports: [ReactiveFormsModule, NgIf, NgClass, ModalComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -17,6 +18,8 @@ export class LoginComponent {
   message: string = '';
   isError: boolean = false;
   isPasswordVisible: boolean = false;
+  modalMessage: string = '';
+  showModal: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -43,20 +46,20 @@ export class LoginComponent {
   // login.component.ts
   async login(): Promise<void> {
     if (this.loginForm.invalid) {
-      this.message = 'Completá todos los campos correctamente.';
-      this.isError = true;
+      this.modalMessage = 'Completá todos los campos correctamente.';
+      this.showModal = true;
       return;
     }
-
     const { usernameOrEmail, password } = this.loginForm.value;
-
     try {
       await this.authService.login(usernameOrEmail, password);
       this.isError = false;
     } catch (error: any) {
-      this.message = error.message;
+      this.modalMessage = error.message || 'Error al iniciar sesión.';
+      this.showModal = true;
       this.isError = true;
     }
   }
+  closeModal() { this.showModal = false; }
 
 }

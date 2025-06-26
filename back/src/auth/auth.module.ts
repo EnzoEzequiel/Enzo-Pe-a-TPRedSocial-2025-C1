@@ -15,9 +15,8 @@ import { RolesGuard } from './roles.guard';
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     CloudinaryModule,
     JwtModule.register({
-      //ZOMPIX
       secret: process.env.JWT_SECRET || "jwt",
-      signOptions: { expiresIn: '1h' },
+      signOptions: { expiresIn: '15m' },
     }),
   ],
   controllers: [AuthController],

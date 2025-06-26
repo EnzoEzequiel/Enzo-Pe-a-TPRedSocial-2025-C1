@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs';
 
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 import { CommentCreatorComponent } from '../comment-creator/comment-creator.component';
+import { ModalComponent } from '../modal/modal.component';
 
 import { PostService } from '../../services/post/post.service';
 import { AuthService } from '../../services/auth/auth.service';
@@ -12,7 +13,7 @@ import { User } from '../../models/user.model';
 @Component({
   selector: 'app-post',
   standalone: true,
-  imports: [ CommonModule, NgIf, NgClass, TimeAgoPipe, CommentCreatorComponent ],
+  imports: [ CommonModule, NgIf, NgClass, TimeAgoPipe, CommentCreatorComponent, ModalComponent ],
   templateUrl: './post.component.html',
   styleUrls: ['./post.component.css']
 })
@@ -48,6 +49,9 @@ export class PostComponent {
   isAdmin: boolean;
   userSignal!: Signal<User | null>;
 
+  modalMessage: string = '';
+  showModal: boolean = false;
+
   constructor(
     private postService: PostService,
     private authService: AuthService
@@ -60,12 +64,18 @@ export class PostComponent {
   async likePost(post: any): Promise<void> {
     this.loading = true;
     const user = this.userSignal();
-    if (!user) return;
+    if (!user) {
+      this.modalMessage = 'Debes iniciar sesión para dar like.';
+      this.showModal = true;
+      this.loading = false;
+      return;
+    }
     try {
       await firstValueFrom(this.postService.likePost(post._id, user));
       this.postLiked.emit();
     } catch (err) {
-      console.error(err);
+      this.modalMessage = 'Error al dar like.';
+      this.showModal = true;
     } finally {
       this.loading = false;
     }
@@ -127,8 +137,12 @@ export class PostComponent {
       .subscribe(() => {
         this.comments = this.comments.filter(c => c._id !== commentId);
         this.totalComments--;
-      }, err => console.error(err));
+      }, err => {
+        this.modalMessage = 'Error al eliminar comentario.';
+        this.showModal = true;
+      });
   }
+  closeModal() { this.showModal = false; }
 
   // — Soft-delete de post —
   async eliminatePost(): Promise<void> {

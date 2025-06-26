@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ProfileHeaderComponent } from './components/profile-header/profile-header.component';
 import { PostComponent } from '../../components/post/post.component';
-import { NgFor, NgIf } from '@angular/common';
+import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { PostService } from '../../services/post/post.service';
 import { Post } from '../../models/post.model';
 import { PostInteractionsComponent } from '../../components/post-interactions/post-interactions.component';
@@ -10,12 +10,16 @@ import { PostInteractionsComponent } from '../../components/post-interactions/po
 
 @Component({
   selector: 'app-profile',
-  imports: [ProfileHeaderComponent, PostComponent, NgFor, NgIf, PostInteractionsComponent],
+  imports: [ProfileHeaderComponent, PostComponent, NgFor, NgIf, PostInteractionsComponent, CommonModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent {
   posts: Post[] = [];
+  commentsByPost: { [postId: string]: any[] } = {};
+  commentsPageByPost: { [postId: string]: number } = {};
+  commentsLimit = 3;
+  totalCommentsByPost: { [postId: string]: number } = {};
   selectedPost: any = null;
   username = localStorage.getItem('username') || '';
   firstName = localStorage.getItem('firstName') || '';
@@ -59,19 +63,34 @@ export class ProfileComponent {
     this.loadPosts();
   }
 
-  private loadPosts(): void {
-    this.postService.getPostsByUsername(this.username).subscribe((data) => {
-      this.posts = data.map(post => {
-        post.date = this.formatTimeAgo(post.date);
-        return post;
-      });
+  loadCommentsForPost(postId: string) {
+    this.commentsPageByPost[postId] = 1;
+    this.postService.getComments(postId, 1, this.commentsLimit).subscribe(res => {
+      this.commentsByPost[postId] = res.comments;
+      this.totalCommentsByPost[postId] = res.total;
     });
   }
 
+  loadMoreCommentsForPost(postId: string) {
+    this.commentsPageByPost[postId] = (this.commentsPageByPost[postId] || 1) + 1;
+    this.postService.getComments(postId, this.commentsPageByPost[postId], this.commentsLimit).subscribe(res => {
+      this.commentsByPost[postId] = [...(this.commentsByPost[postId] || []), ...res.comments];
+    });
+  }
 
   ngOnInit(): void {
     this.loadPosts();
 
+  }
+
+  private loadPosts(): void {
+    this.postService.getPostsByUsername(this.username).subscribe((data) => {
+      this.posts = data.filter(post => !!post._id).map(post => {
+        post.date = this.formatTimeAgo(post.date);
+        this.loadCommentsForPost(post._id!);
+        return post;
+      });
+    });
   }
 
 }

@@ -143,4 +143,7 @@
   <!-- Mensajes -->
   <p class="col-span-1 md:col-span-2 text-red-500 text-sm text-center mt-2" *ngIf="errorMessage">{{ errorMessage }}</p>
   <p class="col-span-1 md:col-span-2 text-green-500 text-sm text-center mt-2" *ngIf="successMessage">{{ successMessage }}</p>
+
+  <!-- Modal -->
+  <app-modal *ngIf="showModal" [message]="modalMessage" (close)="closeModal()"></app-modal>
 </form>

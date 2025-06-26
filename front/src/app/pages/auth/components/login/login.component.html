@@ -60,4 +60,7 @@
   >
     {{ message }}
   </div>
+
+  <!-- Modal -->
+  <app-modal *ngIf="showModal" [message]="modalMessage" (close)="closeModal()"></app-modal>
 </form>

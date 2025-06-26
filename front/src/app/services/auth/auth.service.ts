@@ -25,21 +25,24 @@ export class AuthService {
 
   async login(usernameOrEmail: string, password: string): Promise<User> {
     try {
+      console.log('[AuthService] Intentando login con:', usernameOrEmail);
       const response = this.http.post<{ accessToken: string; user: User }>(`${this.apiUrl}/login`, {
         usernameOrEmail,
         password,
       });
       const { accessToken, user } = await firstValueFrom(response);
+      console.log('[AuthService] Login exitoso, accessToken:', accessToken, 'user:', user);
 
       user.accessToken = accessToken;
       this.saveUserToLocalStorage(user);
       this.currentUser.set(user);
+      console.log('[AuthService] Usuario y token guardados en localStorage:', localStorage);
 
       await this.router.navigate(['/home']);
       return user;
 
     } catch (error) {
-      console.error('Error en AuthService.login:', error);
+      console.error('[AuthService] Error en login:', error);
       throw new Error('Credenciales inválidas o error en el servidor.');
     }
   }

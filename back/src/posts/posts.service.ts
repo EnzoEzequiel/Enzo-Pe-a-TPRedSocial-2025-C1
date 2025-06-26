@@ -108,8 +108,10 @@ export class PostsService {
                 throw new ForbiddenException('No tienes permiso para eliminar este post');
             }
             post.show = false;
+            // Baja lógica de comentarios
+            post.comments.forEach((c: any) => c.show = false);
             await post.save();
-            return { message: 'Post eliminado lógicamente', post };
+            return { message: 'Post y comentarios eliminados lógicamente', post };
         } catch {
             throw new InternalServerErrorException('Error al eliminar el post');
         }
@@ -151,17 +153,39 @@ export class PostsService {
         return { message: 'Comentario eliminado correctamente' };
     }
 
-    // async editComment(postId: string, commentId: string, updateCommentDto: UpdateCommentDto, username: string, role: string) {
-    //     const post = await this.postModel.findById(postId);
-    //     if (!post) throw new NotFoundException('Post not found');
-    //     const comment = post.comments.id(commentId);
-    //     if (!comment) throw new NotFoundException('Comment not found');
-    //     if (role !== 'admin' && comment.username !== username) throw new ForbiddenException('No permission');
-    //     comment.content = updateCommentDto.content;
-    //     comment.modified = true;
-    //     await post.save();
-    //     return comment;
-    // }
+    async getPaginatedPosts(page = 1, limit = 10, order = 'date', username?: string) {
+        const query: any = { show: true };
+        if (username) query.username = username;
+        let sort: any = { date: -1 };
+        if (order === 'likes') sort = { 'likes.length': -1 };
+        const posts = await this.postModel.find(query)
+            .sort(sort)
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .exec();
+        const total = await this.postModel.countDocuments(query);
+        return { posts, total };
+    }
+
+    async removeLike(postId: string, username: string) {
+        const post = await this.postModel.findById(postId);
+        if (!post) throw new BadRequestException('No se encontró el post');
+        post.likes = post.likes.filter((like: any) => like.username !== username);
+        await post.save();
+        return post;
+    }
+
+    async editComment(postId: string, commentId: string, updateCommentDto: { content: string, username: string, role: string }) {
+        const post = await this.postModel.findById(postId);
+        if (!post) throw new NotFoundException('Post not found');
+        const comment = post.comments.find((c: any) => c._id?.toString() === commentId);
+        if (!comment) throw new NotFoundException('Comment not found');
+        if (updateCommentDto.role !== 'admin' && comment.username !== updateCommentDto.username) throw new ForbiddenException('No permission');
+        comment.content = updateCommentDto.content;
+        comment.modified = true;
+        await post.save();
+        return comment;
+    }
 
     async softDeletePost(id: string, username: string, role: string) {
         if (role !== 'admin') {

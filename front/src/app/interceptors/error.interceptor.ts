@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   HttpEvent,
   HttpHandler,
@@ -9,16 +9,21 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { AppComponent } from '../app.component';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
   constructor(private router: Router) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const appComponent = inject(AppComponent, { optional: true });
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           this.router.navigate(['/auth']);
+        } else if (appComponent) {
+          const msg = error.error?.message || error.statusText || 'Error desconocido';
+          appComponent.showErrorModal(msg);
         }
         return throwError(() => error);
       })

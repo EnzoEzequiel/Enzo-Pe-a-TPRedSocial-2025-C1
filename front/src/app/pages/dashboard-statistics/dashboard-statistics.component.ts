@@ -104,61 +104,37 @@ export class DashboardStatisticsComponent {
   async getData(): Promise<void> {
     let labels: string[] = [];
     let counts: number[] = [];
-
+    // Rango de fechas: ejemplo simple, puedes mejorarlo con un selector de fechas
+    const now = new Date();
+    let from: string, to: string;
+    if (this.selected === 'day') {
+      from = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+      to = now.toISOString();
+    } else if (this.selected === 'week') {
+      from = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7).toISOString();
+      to = now.toISOString();
+    } else {
+      from = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate()).toISOString();
+      to = now.toISOString();
+    }
     try {
-      const data = await firstValueFrom(
-        this.statisticsService.getStatistics(this.selectedTab, this.selected)
-      );
-
-      if (!data) {
-        this.setEmptyChart();
-        return;
-      }
-
-      if (this.selectedTab === 2) {
-        const stats = Array.isArray(data) ? data[0] : data;
-        counts = [stats.totalComments || 0];
-        labels = ['Total Comentarios'];
-      } else if (Array.isArray(data) && data.length > 0) {
+      let data: any;
+      if (this.selectedTab === 1) {
+        data = await firstValueFrom(this.statisticsService.getPostsByUser(from, to));
+        labels = data.map((item: any) => item._id || 'Sin usuario');
         counts = data.map((item: any) => item.count);
-        switch (this.selectedTab) {
-          case 1:
-            labels = data.map((item: any) => item.username || item.firstName || 'Sin usuario');
-            break;
-          case 3:
-            labels = data.map((item: any) => item.content || 'Sin contenido');
-            break;
-          default:
-            labels = data.map((item: any) => item.username || item.firstName || 'Sin usuario');
-            break;
-        }
-      } else {
-        this.chartOptions = null;
-        return;
+      } else if (this.selectedTab === 2) {
+        data = await firstValueFrom(this.statisticsService.getCommentsByDate(from, to));
+        counts = [data[0]?.count || 0];
+        labels = ['Total Comentarios'];
+      } else if (this.selectedTab === 3) {
+        data = await firstValueFrom(this.statisticsService.getCommentsByPost(from, to));
+        labels = data.map((item: any) => item._id || 'Sin publicación');
+        counts = data.map((item: any) => item.count);
       }
-
-      this.chartOptions = {
-        chart: { type: 'line' as ChartType, height: 350, toolbar: { show: false } },
-        series: [{ name: this.title, data: counts }],
-        xaxis: {
-          categories: labels,
-          title: {
-            text:
-              this.selectedTab === 1
-                ? 'Usuarios'
-                : this.selectedTab === 2
-                  ? 'Comentarios'
-                  : 'Publicaciones'
-          }
-        },
-        title: { text: this.title },
-        stroke: { curve: 'smooth' },
-        dataLabels: { enabled: true },
-        fill: { colors: ['#f3f3f3', '#f3f3f3'] },
-        grid: { row: { colors: ['#f3f3f3', 'transparent'], opacity: 0.2 } },
-      };
-
+      this.chartOptions = this.buildChartOptions(labels, counts);
     } catch (error) {
+      this.setEmptyChart();
       console.error('Error al obtener los datos:', error);
     }
   }

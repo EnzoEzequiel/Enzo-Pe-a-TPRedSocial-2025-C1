@@ -10,11 +10,11 @@ export class AuthGuard implements CanActivate {
 
   canActivate(): boolean {
     const user = localStorage.getItem('username');
-
+    console.log('[AuthGuard] canActivate, username en localStorage:', user);
     if (user) {
       return true;
     }
-
+    console.warn('[AuthGuard] Usuario no autenticado, redirigiendo a /auth');
     this.router.navigate(['/auth']);
     return false;
   }

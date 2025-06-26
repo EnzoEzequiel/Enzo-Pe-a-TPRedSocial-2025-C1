@@ -5,8 +5,27 @@
         <app-profile-header></app-profile-header>
 
         <div class="flex-1 overflow-y-auto divide-y divide-gray-800">
-            <app-post *ngFor="let post of posts" [post]="post" (postLiked)="onPostLiked()"
-                (interactionsRequested)="openPostInteractions(post)"></app-post>
+            <div *ngFor="let post of posts">
+                <app-post [post]="post" (postLiked)="onPostLiked()"
+                    (interactionsRequested)="openPostInteractions(post)"></app-post>
+                <div class="ml-8 mt-2" *ngIf="post._id && commentsByPost[post._id]">
+                    <div *ngFor="let c of commentsByPost[post._id]" class="my-2">
+                        <div class="flex items-center space-x-2">
+                            <img [src]="c.profileImage || 'assets/images/default-avatar.png'"
+                                 class="w-6 h-6 rounded-full object-cover" />
+                            <strong class="text-sm text-gray-800">{{ c.firstName }} {{ c.lastName }}</strong>
+                            <span class="text-xs text-gray-500">&commat;{{ c.username }}</span>
+                            <span class="text-xs text-gray-400">{{ c.date | date:'short' }}</span>
+                        </div>
+                        <div class="ml-8 text-gray-300 text-sm">{{ c.content }}</div>
+                    </div>
+                    <button *ngIf="post._id && commentsByPost[post._id] && totalCommentsByPost[post._id] !== undefined && commentsByPost[post._id].length < totalCommentsByPost[post._id]"
+                            (click)="loadMoreCommentsForPost(post._id)"
+                            class="mt-2 px-4 py-1 bg-gray-700 hover:bg-gray-600 rounded text-sm text-white">
+                        Cargar más comentarios
+                    </button>
+                </div>
+            </div>
         </div>
 
         <app-post-interactions *ngIf="selectedPost" [likes]="selectedPost.likes" [comments]="selectedPost.comments"
