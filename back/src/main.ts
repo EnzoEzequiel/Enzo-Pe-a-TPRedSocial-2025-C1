@@ -9,6 +9,7 @@ async function bootstrap() {
     origin: (origin, callback) => {
       const allowedOrigins = [
         'http://localhost:4200',
+        'https://front-zria.onrender.com',
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
