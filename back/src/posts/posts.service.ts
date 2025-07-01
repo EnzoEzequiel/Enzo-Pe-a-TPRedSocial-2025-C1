@@ -156,14 +156,17 @@ export class PostsService {
     async getPaginatedPosts(page = 1, limit = 10, order = 'date', username?: string) {
         const query: any = { show: true };
         if (username) query.username = username;
-        let sort: any = { date: -1 };
-        if (order === 'likes') sort = { 'likes.length': -1 };
-        const posts = await this.postModel.find(query)
-            .sort(sort)
-            .skip((page - 1) * limit)
-            .limit(limit)
-            .exec();
-        const total = await this.postModel.countDocuments(query);
+        let posts = await this.postModel.find(query).exec();
+
+        if (order === 'likes') {
+            posts = posts.sort((a, b) => (b.likes?.length || 0) - (a.likes?.length || 0));
+        } else {
+            posts = posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        }
+
+        const total = posts.length;
+        posts = posts.slice((page - 1) * limit, page * limit);
+
         return { posts, total };
     }
 
