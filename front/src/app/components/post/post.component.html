@@ -26,7 +26,8 @@
 
   <!-- Likes y comentarios -->
   <div class="flex items-center justify-around border-t border-gray-200 py-2">
-    <button (click)="likePost(post)"
+    <button type="button"
+            (click)="likePost(post)"
             class="flex items-center space-x-1 hover:bg-gray-100 px-3 py-1 rounded-full">
       <i class="fas fa-thumbs-up text-lg"
          [ngClass]="{'text-blue-600': hasUserLiked(post), 'text-gray-600': !hasUserLiked(post)}"></i>

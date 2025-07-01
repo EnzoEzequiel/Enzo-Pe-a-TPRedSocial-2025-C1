@@ -71,8 +71,10 @@ export class PostComponent {
       return;
     }
     try {
-      await firstValueFrom(this.postService.likePost(post._id, user));
-      this.postLiked.emit();
+
+      const updatedPost = await firstValueFrom(this.postService.likePost(post._id, user));
+
+      post.likes = updatedPost.likes;
     } catch (err) {
       this.modalMessage = 'Error al dar like.';
       this.showModal = true;
