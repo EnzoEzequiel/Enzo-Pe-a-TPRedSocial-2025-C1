@@ -43,8 +43,7 @@ export class PostsController {
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
-  // ————— protected con multipart/form-data —————
-  // Aquí hacemos la extracción manual, sin que RolesGuard se ejecute antes:
+  // — Protected: multipart/form-data (createPost) —
   @Post('create')
   @UseInterceptors(FileInterceptor('image'))
   async createPost(
@@ -52,8 +51,9 @@ export class PostsController {
     @UploadedFile() file: Express.Multer.File,
     @Body() createPostDto: CreatePostDto,
   ) {
+    // Manual JWT extraction for multipart endpoint
     const jwtPayload = extractUserFromHeader(req.headers['authorization']);
-    if (!jwtPayload || !['admin','user'].includes(jwtPayload.role)) {
+    if (!jwtPayload || !['admin', 'user'].includes(jwtPayload.role)) {
       throw new ForbiddenException('You do not have permission (roles)');
     }
 
@@ -78,17 +78,16 @@ export class PostsController {
     });
   }
 
-  // ————— protected endpoints normais —————
-  // Ahora aplicamos guards *dentro* de cada método, en el orden correcto:
+  // — Protected: standard endpoints —
   @Post('like/:postId')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin','user')
+  @Roles('admin', 'user')
   async likePost(
     @Req() req,
     @Param('postId') postId: string,
     @Body() createLikeDto: CreateLikeDto,
   ) {
-    // req.user ya está seteado por JwtAuthGuard
+    // req.user set by AuthMiddleware + JwtAuthGuard
     return this.postsService.likePost(postId, {
       ...createLikeDto,
       username: req.user.username,
@@ -97,7 +96,7 @@ export class PostsController {
 
   @Post('delete/:postId')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin','user')
+  @Roles('admin', 'user')
   async logicalDeletePost(
     @Param('postId') postId: string,
     @Body('username') username: string,
@@ -108,7 +107,7 @@ export class PostsController {
 
   @Post(':postId/comment')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin','user')
+  @Roles('admin', 'user')
   async addComment(
     @Param('postId') postId: string,
     @Body() createCommentDto: CreateCommentDto,
@@ -118,7 +117,7 @@ export class PostsController {
 
   @Delete(':postId/comments/:commentId')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin','user')
+  @Roles('admin', 'user')
   async deleteComment(
     @Param('postId') postId: string,
     @Param('commentId') commentId: string,
@@ -130,7 +129,7 @@ export class PostsController {
 
   @Put(':postId/comments/:commentId')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin','user')
+  @Roles('admin', 'user')
   async editComment(
     @Param('postId') postId: string,
     @Param('commentId') commentId: string,
@@ -150,7 +149,7 @@ export class PostsController {
     return this.postsService.softDeletePost(id, username, role);
   }
 
-  // ————— endpoints públicos/no protegidos —————
+  // — Public or unprotected endpoints —
   @Get()
   findAllByUsername(@Query('username') username: string) {
     return this.postsService.findAllByUsername(username);
