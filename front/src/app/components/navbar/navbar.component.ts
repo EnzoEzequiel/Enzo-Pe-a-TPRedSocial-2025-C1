@@ -50,9 +50,7 @@ export class NavbarComponent {
   }
 
   closeMenu() {
-    setTimeout(() => {
-      this.menuOpen = false;
-    }, 200);
+    this.menuOpen = false;
   }
 
   logout(): void {

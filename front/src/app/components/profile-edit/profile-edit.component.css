@@ -1,0 +1,30 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 50;
+}
+
+.modal-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem;
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  color: #1f2937;
+  outline: none;
+}
+
+.input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #22c55e;
+  border-color: #22c55e;
+}

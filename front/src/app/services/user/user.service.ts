@@ -53,4 +53,8 @@ export class UserService {
     return this.http.get<User[]>(`${this.apiUrl}/friends/${userId}`);
   }
 
+  updateProfile(formData: FormData): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/me`, formData);
+  }
+
 }

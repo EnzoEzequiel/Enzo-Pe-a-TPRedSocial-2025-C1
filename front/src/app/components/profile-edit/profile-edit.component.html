@@ -1,0 +1,33 @@
+<div class="modal-backdrop" (click)="close()"></div>
+<div class="modal-content p-6 bg-white rounded-xl shadow max-w-xl mx-auto">
+  <form [formGroup]="editForm" (ngSubmit)="save()" enctype="multipart/form-data" class="space-y-4">
+    <h2 class="text-2xl font-bold text-center text-gray-800">Editar Perfil</h2>
+
+    <input type="text" formControlName="firstName" placeholder="Nombre" class="input" />
+    <input type="text" formControlName="lastName" placeholder="Apellido" class="input" />
+    <input type="email" formControlName="email" placeholder="Correo" class="input" />
+    <input type="text" formControlName="username" placeholder="Usuario" class="input" />
+    <input type="date" formControlName="birthDate" class="input" />
+    <textarea formControlName="description" placeholder="Descripción" rows="2" class="input"></textarea>
+
+    <select formControlName="role" class="input">
+      <option value="user">Usuario</option>
+      <option value="admin">Administrador</option>
+    </select>
+
+    <input type="password" formControlName="password" placeholder="Nueva contraseña (opcional)" class="input" autocomplete="new-password" />
+
+    <!-- Imagen actual / preview -->
+    <div class="flex items-center space-x-2">
+      <img *ngIf="editForm.value.profileImage && !imagePreview" [src]="editForm.value.profileImage" class="w-12 h-12 rounded-full" />
+      <img *ngIf="imagePreview" [src]="imagePreview" class="w-12 h-12 rounded-full" />
+    </div>
+
+    <input type="file" (change)="onFileSelected($event)" accept="image/*" class="text-sm text-gray-600" />
+
+    <div class="flex justify-end gap-4 mt-4">
+      <button type="button" (click)="close()" class="bg-gray-400 px-4 py-1 rounded text-white hover:bg-gray-500">Cancelar</button>
+      <button type="submit" class="bg-green-600 px-4 py-1 rounded text-white hover:bg-green-700">Guardar</button>
+    </div>
+  </form>
+</div>

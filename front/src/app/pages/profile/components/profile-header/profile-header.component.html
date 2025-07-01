@@ -25,3 +25,9 @@
     </div>
   </div>
 </div>
+<app-profile-edit
+  *ngIf="showEditModal"
+  [user]="userSignal()"
+  (updated)="onProfileUpdated($event)"
+  (closed)="showEditModal = false">
+</app-profile-edit>

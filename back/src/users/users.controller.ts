@@ -1,8 +1,9 @@
-import { Controller, Get, Param, Delete, Query, Body, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Delete, Query, Body, Post, UseGuards, Put, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Roles } from '../auth/roles.decorator';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -49,5 +50,17 @@ export class UsersController {
     @Roles('admin')
     enable(@Param('id') id: string) {
         return this.usersService.enable(id);
+    }
+
+    @Put('me')
+    @Roles('admin', 'user') 
+    @UseGuards(JwtAuthGuard)
+    @UseInterceptors(FileInterceptor('profileImage'))
+    async updateMe(
+        @Req() req,
+        @Body() updateUserDto: any,
+        @UploadedFile() file?: Express.Multer.File
+    ) {
+        return this.usersService.updateUser(req.user._id, updateUserDto, file);
     }
 }

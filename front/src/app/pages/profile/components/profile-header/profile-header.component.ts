@@ -2,12 +2,12 @@ import { Component, computed, Signal } from '@angular/core';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { User } from '../../../../models/user.model';
 import { NgIf } from '@angular/common';
-
-
+import { UserService } from '../../../../services/user/user.service';
+import { ProfileEditComponent } from '../../../../components/profile-edit/profile-edit.component';
 @Component({
   selector: 'app-profile-header',
   standalone: true,
-  imports: [NgIf],
+  imports: [NgIf, ProfileEditComponent],
   templateUrl: './profile-header.component.html',
   styleUrl: './profile-header.component.css'
 })
@@ -15,7 +15,7 @@ export class ProfileHeaderComponent {
   userSignal!: Signal<User | null>;
   followers: number;
   following: number;
-
+  showEditModal = false;
   username = computed(() => this.userSignal()?.username || '');
   firstName = computed(() => this.userSignal()?.firstName || '');
   lastName = computed(() => this.userSignal()?.lastName || '');
@@ -33,8 +33,10 @@ export class ProfileHeaderComponent {
     return this.formatDateToSpanish(isoDate);
   });
 
-
-  constructor(private authService: AuthService) {
+  constructor(
+    private authService: AuthService,
+    private userService: UserService
+  ) {
     this.userSignal = this.authService.currentUser;
     this.followers = this.authService.followers;
     this.following = this.authService.following;
@@ -51,8 +53,13 @@ export class ProfileHeaderComponent {
   }
 
   onEditProfile() {
-
-    alert('Abrir modal de edición o navegar a la página de edición');
+    this.showEditModal = true;
   }
 
+  onProfileUpdated(formData: FormData) {
+    this.userService.updateProfile(formData).subscribe(updatedUser => {
+      this.authService.setCurrentUser(updatedUser);
+      this.showEditModal = false;
+    });
+  }
 }

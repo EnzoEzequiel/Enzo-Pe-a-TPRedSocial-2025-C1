@@ -122,6 +122,11 @@ export class AuthService {
     return this.currentUser()?.role === 'admin';
   }
 
+  async setCurrentUser(user: User): Promise<void> {
+    this.currentUser.set(user);
+    this.saveUserToLocalStorage(user);
+  }
+
   sessionTimeout: any;
   startSessionTimer(durationMs: number, onTimeout: () => void) {
     if (this.sessionTimeout) clearTimeout(this.sessionTimeout);
