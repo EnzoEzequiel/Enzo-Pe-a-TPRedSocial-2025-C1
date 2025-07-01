@@ -5,7 +5,7 @@ import { CanActivate, ActivatedRouteSnapshot, Router } from '@angular/router';
 export class RoleGuard implements CanActivate {
   constructor(private router: Router) {}
 
-  canActivate(route: ActivatedRouteSnapshot): boolean {
+  async canActivate(route: ActivatedRouteSnapshot): Promise<boolean> {
     const expectedRole = route.data['role'] as string;
     const userRole = localStorage.getItem('role');
     if (userRole === expectedRole) {

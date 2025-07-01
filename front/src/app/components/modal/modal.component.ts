@@ -1,8 +1,10 @@
+import { NgIf } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-modal',
   standalone: true,
+  imports: [NgIf],
   template: `
     <div class="modal-backdrop" (click)="onClose()"></div>
     <div class="modal-content">
