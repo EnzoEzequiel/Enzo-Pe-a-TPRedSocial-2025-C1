@@ -182,4 +182,13 @@ export class PostsController {
   ) {
     return this.postsService.removeLike(postId, username);
   }
+
+  @Get(':postId/comments')
+  async getComments(
+    @Param('postId') postId: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 5,
+  ) {
+    return this.postsService.getComments(postId, Number(page), Number(limit));
+  }
 }
