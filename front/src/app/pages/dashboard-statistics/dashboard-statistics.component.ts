@@ -104,35 +104,57 @@ export class DashboardStatisticsComponent {
   async getData(): Promise<void> {
     let labels: string[] = [];
     let counts: number[] = [];
-    // Rango de fechas: ejemplo simple, puedes mejorarlo con un selector de fechas
+
+    // Corrección en el manejo de fechas
     const now = new Date();
-    let from: string, to: string;
+    let from: Date, to: Date;
+
     if (this.selected === 'day') {
-      from = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
-      to = now.toISOString();
+      from = new Date(now.setHours(0, 0, 0, 0));
+      to = new Date(now.setHours(23, 59, 59, 999));
     } else if (this.selected === 'week') {
-      from = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7).toISOString();
-      to = now.toISOString();
+      from = new Date(now);
+      from.setDate(from.getDate() - 7);
+      from.setHours(0, 0, 0, 0);
+      to = new Date(now);
+      to.setHours(23, 59, 59, 999);
     } else {
-      from = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate()).toISOString();
-      to = now.toISOString();
+      from = new Date(now);
+      from.setMonth(from.getMonth() - 1);
+      from.setHours(0, 0, 0, 0);
+      to = new Date(now);
+      to.setHours(23, 59, 59, 999);
     }
+
     try {
       let data: any;
       if (this.selectedTab === 1) {
-        data = await firstValueFrom(this.statisticsService.getPostsByUser(from, to));
+        data = await firstValueFrom(this.statisticsService.getPostsByUser(from.toISOString(), to.toISOString()));
         labels = data.map((item: any) => item._id || 'Sin usuario');
         counts = data.map((item: any) => item.count);
       } else if (this.selectedTab === 2) {
-        data = await firstValueFrom(this.statisticsService.getCommentsByDate(from, to));
-        counts = [data[0]?.count || 0];
+        data = await firstValueFrom(this.statisticsService.getCommentsByDate(from.toISOString(), to.toISOString()));
+
+        counts = data.length > 0 ? [data[0].count] : [0];
         labels = ['Total Comentarios'];
+
+        // Alternativa para gráfico temporal
+        // counts = data.map((item: any) => item.count);
+        // labels = data.map((item: any) => new Date(item._id).toLocaleDateString());
       } else if (this.selectedTab === 3) {
-        data = await firstValueFrom(this.statisticsService.getCommentsByPost(from, to));
-        labels = data.map((item: any) => item._id || 'Sin publicación');
+        data = await firstValueFrom(this.statisticsService.getCommentsByPost(from.toISOString(), to.toISOString()));
+        labels = data.map((item: any) => item._id?.title?.substring(0, 15) + '...' || 'Sin título');
         counts = data.map((item: any) => item.count);
       }
-      this.chartOptions = this.buildChartOptions(labels, counts);
+
+      console.log('Datos recibidos:', { labels, counts }); // Debug
+
+      if (counts.length > 0 && counts.some(count => count > 0)) {
+        this.chartOptions = this.buildChartOptions(labels, counts);
+      } else {
+        this.setEmptyChart();
+        console.warn('Datos recibidos pero todos los valores son cero');
+      }
     } catch (error) {
       this.setEmptyChart();
       console.error('Error al obtener los datos:', error);

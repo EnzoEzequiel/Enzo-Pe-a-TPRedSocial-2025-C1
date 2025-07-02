@@ -4,4 +4,5 @@ export class CreateCommentDto {
     lastName: string;
     profileImage: string;
     content: string;
+    deleted?: boolean;
 }

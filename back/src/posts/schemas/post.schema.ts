@@ -33,7 +33,10 @@ export class Post extends Document {
             firstName: String,
             lastName: String,
             profileImage: String,
-            content: String
+            content: String,
+            date: Date,
+            modified: Boolean,
+            deleted: { type: Boolean, default: false }
         }],
         default: [],
     })
@@ -45,6 +48,7 @@ export class Post extends Document {
         date: Date;
         content: string;
         modified?: boolean;
+        deleted?: boolean;
     }[];
 
     @Prop({ default: Date.now })

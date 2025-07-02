@@ -18,11 +18,11 @@ export class DashboardUsersComponent implements OnInit {
   users: User[] = [];
   loading = false;
 
-  // controles de visibilidad
+
   showForm = true;
   showList = true;
 
-  selectedTab: 1 | 2 = 1; // opcional si quisieras pestañas
+  selectedTab: 1 | 2 = 1;
 
   constructor(
     private fb: FormBuilder,

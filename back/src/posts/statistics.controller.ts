@@ -15,14 +15,16 @@ export class StatisticsController {
     @Query('from') from: string,
     @Query('to') to: string
   ) {
-    return this.statisticsService.getPostsByUser(from, to);
+    const fromDate = new Date(from);
+    const toDate = new Date(to);
+    return this.statisticsService.getPostsByUser(fromDate, toDate);
   }
 
   @Get('comments-by-date')
   @Roles('admin')
   getCommentsByDate(
     @Query('from') from: string,
-    @Query('to') to: string
+    @Query('to') to: string,
   ) {
     return this.statisticsService.getCommentsByDate(from, to);
   }

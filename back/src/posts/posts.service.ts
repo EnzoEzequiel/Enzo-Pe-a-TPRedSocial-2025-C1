@@ -207,7 +207,8 @@ export class PostsService {
         post.comments.unshift({
             ...commentData,
             date: new Date(),
-            modified: false
+            modified: false,
+            deleted: false 
         });
         await post.save();
         return post.comments[0];
