@@ -17,7 +17,11 @@ export class UsersService {
     async create(createUserDto: CreateUserDto): Promise<User> {
         const saltOrRounds = 10;
         createUserDto.password = await bcrypt.hash(createUserDto.password, saltOrRounds);
-
+        
+        if (!createUserDto.role) {
+            createUserDto.role = 'user';
+        }
+        
         const newUser = new this.userModel(createUserDto);
         return newUser.save();
     }

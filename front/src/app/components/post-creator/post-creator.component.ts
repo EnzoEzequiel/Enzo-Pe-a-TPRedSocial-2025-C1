@@ -33,6 +33,11 @@ export class PostCreatorComponent {
     }
   }
 
+  removeImage(): void {
+    this.imagePreview = null;
+    this.imageFile = null;
+  }
+
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;
