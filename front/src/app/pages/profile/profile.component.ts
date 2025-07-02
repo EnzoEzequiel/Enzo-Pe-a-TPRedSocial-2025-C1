@@ -59,6 +59,14 @@ export class ProfileComponent {
     });
   }
 
+  deletePost(postId: string) {
+    const username = localStorage.getItem('username') || '';
+    const role = localStorage.getItem('role') || '';
+    this.postService.softDeletePost(postId, username, role).subscribe(() => {
+      this.posts = this.posts.filter(p => p._id !== postId);
+    });
+  }
+
   onPostLiked(): void {
     this.loadPosts();
   }

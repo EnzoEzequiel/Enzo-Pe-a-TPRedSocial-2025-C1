@@ -1,6 +1,9 @@
 <div class="bg-white rounded-xl shadow p-4 mb-4">
   <div class="flex items-start space-x-3">
-    <img [src]="profileImage || 'assets/images/default-avatar.png'" class="w-10 h-10 rounded-full object-cover" />
+    <img
+      [src]="profileImage || 'assets/images/default-avatar.png'"
+      class="w-10 h-10 rounded-full object-cover"
+    />
     <div class="flex-1">
       <textarea
         [(ngModel)]="postText"
@@ -9,23 +12,44 @@
       ></textarea>
 
       <div *ngIf="imagePreview" class="mt-2">
-        <img [src]="imagePreview" alt="Vista previa" class="max-h-40 rounded-lg object-cover" />
+        <img
+          [src]="imagePreview"
+          alt="Vista previa"
+          class="max-h-40 rounded-lg object-cover"
+        />
       </div>
 
       <div class="border-t mt-3 pt-2 flex items-center justify-between text-sm text-gray-600">
-        <label class="flex items-center space-x-1 cursor-pointer hover:bg-gray-200 p-2 rounded-lg">
+        <label
+          class="flex items-center space-x-1 cursor-pointer hover:bg-gray-200 p-2 rounded-lg"
+        >
           <i class="fas fa-photo-video text-iguana text-lg"></i>
           <span>Foto/video</span>
-          <input type="file" accept="image/*" hidden (change)="onImageSelected($event)" />
+          <input
+            type="file"
+            accept="image/*"
+            hidden
+            (change)="onImageSelected($event)"
+          />
         </label>
 
+        <!-- type="button" evita recarga -->
         <button
+          type="button"
           (click)="post()"
           [disabled]="!canPost"
           class="bg-blue-500 text-white font-semibold px-4 py-1 rounded-full hover:bg-blue-600 disabled:opacity-50"
         >
           Publicar
         </button>
+      </div>
+
+      <!-- Mensaje de validación -->
+      <div
+        *ngIf="postText.trim() === '' && triedToPost"
+        class="text-red-500 text-sm mt-1"
+      >
+        El contenido es obligatorio.
       </div>
     </div>
   </div>

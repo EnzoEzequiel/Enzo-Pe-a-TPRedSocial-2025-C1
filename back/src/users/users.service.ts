@@ -4,9 +4,15 @@ import { Model } from 'mongoose';
 import { User, UserDocument } from '../auth/schemas/user.schema';
 import { CreateUserDto } from '../auth/dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
+import { CloudinaryService } from '../cloudinary/cloudinary.service'; // Adjust the path as needed
+import { Post, PostDocument } from '../posts/schemas/post.schema'; // Adjust the path as needed
 @Injectable()
 export class UsersService {
-    constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) { }
+    constructor(
+        @InjectModel(User.name) private userModel: Model<UserDocument>,
+        @InjectModel(Post.name) private postModel: Model<PostDocument>,
+        private readonly cloudinaryService: CloudinaryService
+    ) { }
 
     async create(createUserDto: CreateUserDto): Promise<User> {
         const saltOrRounds = 10;
@@ -59,17 +65,49 @@ export class UsersService {
         await user.save();
     }
 
-    async updateUser(id: string, updateUserDto: Partial<CreateUserDto>, file?: Express.Multer.File): Promise<User> {
+    // async updateUser(id: string, updateUserDto: Partial<CreateUserDto>, file?: Express.Multer.File): Promise<User> {
+    //     const user = await this.userModel.findById(id).exec();
+    //     if (!user) throw new NotFoundException('Usuario no encontrado');
+    //     if (file) {
+    //         // updateUserDto.profileImage = file.path;
+    //         const upload = await this.cloudinaryService.uploadImageFromBuffer(file);
+    //         user.profileImage = upload.secure_url;
+    //     }
+    //     if (updateUserDto.password) {
+    //         const saltOrRounds = 10;
+    //         updateUserDto.password = await bcrypt.hash(updateUserDto.password, saltOrRounds);
+    //     }
+    //     Object.assign(user, updateUserDto);
+    //     return user.save();
+    // }
+    async updateUser(
+        id: string,
+        updateUserDto: Partial<CreateUserDto>,
+        file?: Express.Multer.File
+    ): Promise<User> {
         const user = await this.userModel.findById(id).exec();
         if (!user) throw new NotFoundException('Usuario no encontrado');
+
         if (file) {
-            updateUserDto.profileImage = file.path;
+            const upload = await this.cloudinaryService.uploadImageFromBuffer(file);
+            user.profileImage = upload.secure_url;
         }
+
         if (updateUserDto.password) {
             const saltOrRounds = 10;
             updateUserDto.password = await bcrypt.hash(updateUserDto.password, saltOrRounds);
         }
+
         Object.assign(user, updateUserDto);
-        return user.save();
+
+        const updatedUser = await user.save();
+
+        await this.postModel.updateMany(
+            { username: updatedUser.username },
+            { $set: { profileImage: updatedUser.profileImage } }
+        );
+
+        return updatedUser;
     }
+
 }

@@ -8,6 +8,7 @@
   <div *ngIf="!loading">
     <app-post *ngFor="let post of posts"
     [post]="post"
+    (postDeleted)="deletePost(post._id!)"
     (postLiked)="onPostLiked()"
     (interactionsRequested)="openPostInteractions(post)">
     </app-post>

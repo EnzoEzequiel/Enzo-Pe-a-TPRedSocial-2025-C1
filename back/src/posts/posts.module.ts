@@ -14,5 +14,6 @@ import { StatisticsService } from './statistics.service';
   ],
   providers: [PostsService, StatisticsService],
   controllers: [PostsController, StatisticsController],
+  exports: [MongooseModule, PostsService],
 })
 export class PostsModule { }

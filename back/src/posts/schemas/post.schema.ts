@@ -62,7 +62,7 @@ export class Post extends Document {
     @Prop()
     deletedAt?: Date;
 }
-
+export type PostDocument = Post & Document;
 export const PostSchema = SchemaFactory.createForClass(Post);
 
 // export class Post extends Document {

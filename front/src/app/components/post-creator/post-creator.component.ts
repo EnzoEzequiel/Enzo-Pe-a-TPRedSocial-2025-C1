@@ -19,6 +19,7 @@ export class PostCreatorComponent {
   imageFile: File | null = null;
   imagePreview: string | null = null;
   profileImage: string = '';
+  triedToPost = false;
 
   constructor(
     private postService: PostService,
@@ -54,6 +55,7 @@ export class PostCreatorComponent {
   }
 
   post(): void {
+    // this.triedToPost = true;
     if (!this.postText.trim() && !this.imageFile) return;
 
     const user = this.authService.currentUser();
