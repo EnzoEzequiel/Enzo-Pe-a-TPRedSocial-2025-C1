@@ -11,6 +11,10 @@ import { SpinnerComponent } from '../../components/spinner/spinner.component';
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
+/**
+ * HomeComponent: Muestra el feed de posts, permite crear, eliminar, dar like y paginar publicaciones.
+ * Incluye ordenamiento, recarga automática y manejo de interacciones.
+ */
 export class HomeComponent implements OnInit, OnDestroy {
   loading = false;
   posts: any[] = [];
@@ -25,14 +29,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(private postService: PostService) { }
 
 
+  /** Abre el modal de interacciones para un post */
   openPostInteractions(post: any): void {
     this.selectedPost = post;
   }
 
+  /** Cierra el modal de interacciones de post */
   closePostInteractions(): void {
     this.selectedPost = null;
   }
 
+  /** Inicializa el feed y recarga periódicamente los posts */
   ngOnInit(): void {
     this.loadPosts();
     this.intervalId = setInterval(() => {
@@ -40,25 +47,33 @@ export class HomeComponent implements OnInit, OnDestroy {
     }, 60000);
   }
 
+  /** Limpia el intervalo de recarga automática al destruir el componente */
   ngOnDestroy(): void {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
   }
 
+  /** Recarga los posts cuando se crea uno nuevo */
   onPostCreated(): void {
     this.loadPosts();
   }
 
+  /** Recarga los posts cuando se da like a alguno */
   onPostLiked(): void {
     this.loadPosts();
   }
 
+  /** Cambia el orden del feed (por fecha o likes) y recarga los posts */
   onOrderChange(order: 'date' | 'likes') {
     this.order = order;
     this.page = 1;
     this.loadPosts();
   }
+  /**
+   * Carga más posts y mantiene el scroll en el botón "Cargar más".
+   * @param loadMoreBtn Referencia al botón para calcular la posición de scroll
+   */
   onLoadMore(loadMoreBtn?: HTMLElement) {
     let scrollY = 0;
     if (loadMoreBtn) {
@@ -68,6 +83,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.page++;
     this.loadPosts(false, scrollY);
   }
+  /**
+   * Carga los posts desde el backend, con opción de resetear o agregar más.
+   * Si se pasa scrollY, mantiene el scroll tras cargar más posts.
+   */
   private loadPosts(reset: boolean = true, scrollY?: number): void {
     this.loading = true;
     this.postService.getPaginatedPosts(this.page, this.limit, this.order).subscribe((res) => {
@@ -84,6 +103,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Elimina un post del feed (soft delete) y lo quita del array local.
+   * @param postId ID del post a eliminar
+   */
   deletePost(postId: string) {
     const username = localStorage.getItem('username') || '';
     const role = localStorage.getItem('role') || '';
@@ -92,6 +115,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Devuelve un string amigable de tiempo transcurrido desde una fecha dada.
+   * @param dateString Fecha en string
+   */
   private formatTimeAgo(dateString: string): string {
     const date = new Date(dateString);
     const now = new Date();

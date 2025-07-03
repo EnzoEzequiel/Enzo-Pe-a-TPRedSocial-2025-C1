@@ -17,12 +17,16 @@ import { User } from '../../models/user.model';
   templateUrl: './post.component.html',
   styleUrls: ['./post.component.css']
 })
+/**
+ * PostComponent: Muestra un post, permite likes, comentarios, y borrado lógico.
+ * Maneja modales de confirmación y errores.
+ */
 export class PostComponent {
   private _post!: any;
 
   @Input()
+  /** Setter: asegura que la fecha del post sea un objeto Date */
   set post(value: any) {
-    // Asegura fecha como Date
     if (value && value.createdAt && !(value.createdAt instanceof Date)) {
       value.createdAt = new Date(value.createdAt);
     }
@@ -61,6 +65,10 @@ export class PostComponent {
   }
 
   // — Likes —
+  /**
+   * Da like al post. Si no hay usuario, muestra modal de error.
+   * Actualiza los likes del post tras la respuesta.
+   */
   async likePost(post: any): Promise<void> {
     this.loading = true;
     const user = this.userSignal();
@@ -71,9 +79,7 @@ export class PostComponent {
       return;
     }
     try {
-
       const updatedPost = await firstValueFrom(this.postService.likePost(post._id, user));
-
       post.likes = updatedPost.likes;
     } catch (err) {
       this.modalMessage = 'Error al dar like.';
@@ -83,18 +89,28 @@ export class PostComponent {
     }
   }
 
+  /**
+   * Indica si el usuario actual ya dio like al post.
+   */
   hasUserLiked(post: any): boolean {
     const user = this.userSignal();
     return !!user && Array.isArray(post.likes) && post.likes.some((l: any) => l.username === user.username);
   }
 
   // — Comentarios —
+  /**
+   * Muestra/oculta los comentarios y carga la primera página si se abre.
+   */
   toggleComments() {
     this.showComments = !this.showComments;
     if (this.showComments) this.loadComments(true);
     this.showCommentModal = true;
   }
 
+  /**
+   * Carga los comentarios del post, con paginación.
+   * Si reset=true, reinicia la lista y la página.
+   */
   loadComments(reset: boolean = false) {
     if (reset) {
       this.commentsPage = 1;
@@ -109,6 +125,9 @@ export class PostComponent {
       }, () => this.loadingComments = false);
   }
 
+  /**
+   * Agrega un comentario al post y recarga la lista de comentarios.
+   */
   onCommentCreated(text: string) {
     this.addingComment = true;
     const user = this.userSignal();
@@ -126,17 +145,24 @@ export class PostComponent {
       }, () => this.addingComment = false);
   }
 
+  /** Carga la siguiente página de comentarios */
   loadMoreComments() {
     this.commentsPage++;
     this.loadComments();
   }
 
   commentToDelete: string | null = null;
+  /**
+   * Muestra el modal de confirmación para eliminar un comentario.
+   */
   eliminateComment(commentId: string) {
     this.commentToDelete = commentId;
     this.modalMessage = '¿Seguro que deseas eliminar este comentario?';
     this.showModal = true;
   }
+  /**
+   * Confirma y elimina el comentario seleccionado, mostrando errores en modal si ocurren.
+   */
   confirmDeleteComment() {
     if (!this.commentToDelete) return;
     const user = this.userSignal();
@@ -153,15 +179,23 @@ export class PostComponent {
         this.commentToDelete = null;
       });
   }
+  /** Cierra el modal de confirmación y limpia selección de comentario/post */
   closeModal() { this.showModal = false; this.commentToDelete = null; }
 
   // — Soft-delete de post —
   postToDelete: boolean = false;
+  /**
+   * Muestra el modal de confirmación para eliminar el post.
+   */
   async eliminatePost(): Promise<void> {
     this.postToDelete = true;
     this.modalMessage = '¿Seguro que deseas eliminar este post?';
     this.showModal = true;
   }
+  /**
+   * Confirma y elimina el post, emitiendo el evento correspondiente.
+   * Muestra error en modal si ocurre.
+   */
   async confirmDeletePost(): Promise<void> {
     const user = this.userSignal();
     const username = user?.username || '';
