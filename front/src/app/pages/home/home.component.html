@@ -12,6 +12,6 @@
     (postLiked)="onPostLiked()"
     (interactionsRequested)="openPostInteractions(post)">
     </app-post>
-    <button *ngIf="posts.length < totalPosts" (click)="onLoadMore()" class="mt-4 px-4 py-2 bg-emerald-500 text-white rounded">Cargar más</button>
+    <button *ngIf="posts.length < totalPosts" #loadMoreBtn (click)="onLoadMore(loadMoreBtn)" class="mt-4 px-4 py-2 bg-emerald-500 text-white rounded">Cargar más</button>
   </div>
 </div>

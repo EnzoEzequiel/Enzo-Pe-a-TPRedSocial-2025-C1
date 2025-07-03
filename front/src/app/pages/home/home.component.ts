@@ -59,11 +59,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.page = 1;
     this.loadPosts();
   }
-  onLoadMore() {
+  onLoadMore(loadMoreBtn?: HTMLElement) {
+    let scrollY = 0;
+    if (loadMoreBtn) {
+      const rect = loadMoreBtn.getBoundingClientRect();
+      scrollY = window.scrollY + rect.top;
+    }
     this.page++;
-    this.loadPosts(false);
+    this.loadPosts(false, scrollY);
   }
-  private loadPosts(reset: boolean = true): void {
+  private loadPosts(reset: boolean = true, scrollY?: number): void {
     this.loading = true;
     this.postService.getPaginatedPosts(this.page, this.limit, this.order).subscribe((res) => {
       if (reset) {
@@ -73,6 +78,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
       this.totalPosts = res.total;
       this.loading = false;
+      if (scrollY !== undefined) {
+        setTimeout(() => window.scrollTo({ top: scrollY, behavior: 'auto' }), 100);
+      }
     });
   }
 
