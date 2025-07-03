@@ -4,11 +4,12 @@ import { PostService } from '../../services/post/post.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { User } from '../../models/user.model';
 import { NgIf } from '@angular/common';
+import { ModalComponent } from '../modal/modal.component';
 
 @Component({
   selector: 'app-post-creator',
   standalone: true,
-  imports: [FormsModule, NgIf],
+  imports: [FormsModule, NgIf, ModalComponent],
   templateUrl: './post-creator.component.html',
   styleUrls: ['./post-creator.component.css']
 })
@@ -38,13 +39,16 @@ export class PostCreatorComponent {
     this.imageFile = null;
   }
 
+  showModal = false;
+  modalMessage = '';
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;
 
     const file = input.files[0];
     if (!file.type.startsWith('image/')) {
-      window.alert('Por favor selecciona un archivo de imagen válido.');
+      this.modalMessage = 'Por favor selecciona un archivo de imagen válido.';
+      this.showModal = true;
       return;
     }
 
@@ -60,7 +64,6 @@ export class PostCreatorComponent {
   }
 
   post(): void {
-    // this.triedToPost = true;
     if (!this.postText.trim() && !this.imageFile) return;
 
     const user = this.authService.currentUser();
@@ -84,8 +87,16 @@ export class PostCreatorComponent {
         this.imagePreview = null;
         this.postCreated.emit();
       },
-      error: err => console.error('Error creando post:', err)
+      error: err => {
+        this.modalMessage = 'Error creando post.';
+        this.showModal = true;
+      }
     });
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.modalMessage = '';
   }
 
 }

@@ -77,5 +77,15 @@
     </button>
   </div>
 
-  <app-modal *ngIf="showModal" [message]="modalMessage" (close)="closeModal()"></app-modal>
+  <app-modal *ngIf="showModal" [message]="modalMessage" (close)="closeModal()">
+    <div *ngIf="commentToDelete">
+      <button (click)="confirmDeleteComment()" class="bg-red-600 text-white px-4 py-2 rounded mr-2">Sí, eliminar comentario</button>
+    </div>
+    <div *ngIf="postToDelete">
+      <button (click)="confirmDeletePost()" class="bg-red-600 text-white px-4 py-2 rounded mr-2">Sí, eliminar post</button>
+    </div>
+    <div *ngIf="!commentToDelete && !postToDelete">
+      <button (click)="closeModal()" class="bg-gray-400 text-white px-4 py-2 rounded">Cerrar</button>
+    </div>
+  </app-modal>
 </div>

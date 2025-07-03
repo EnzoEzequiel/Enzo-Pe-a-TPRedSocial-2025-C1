@@ -1,6 +1,7 @@
 // src/app/pages/dashboard-users/dashboard-users.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ModalComponent } from '../../components/modal/modal.component';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { UserService } from '../../services/user/user.service';
@@ -9,20 +10,23 @@ import { User } from '../../models/user.model';
 @Component({
   selector: 'app-dashboard-users',
   standalone: true,
-  imports: [ CommonModule, ReactiveFormsModule, RouterModule ],
+  imports: [ CommonModule, ReactiveFormsModule, RouterModule, ModalComponent ],
   templateUrl: './dashboard-users.component.html',
   styleUrls: ['./dashboard-users.component.css']
 })
+
 export class DashboardUsersComponent implements OnInit {
   form: FormGroup;
   users: User[] = [];
   loading = false;
-
-
   showForm = true;
   showList = true;
-
   selectedTab: 1 | 2 = 1;
+
+  // Modal de confirmación
+  showModal = false;
+  modalMessage = '';
+  userToDelete: User | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -73,7 +77,22 @@ export class DashboardUsersComponent implements OnInit {
   }
 
   deleteUser(user: User) {
-    if (!confirm(`¿Eliminar a ${user.firstName} ${user.lastName}?`)) return;
-    this.usersSvc.disableUser(user._id).subscribe(() => this.loadUsers());
+    this.userToDelete = user;
+    this.modalMessage = `¿Eliminar a ${user.firstName} ${user.lastName}?`;
+    this.showModal = true;
+  }
+
+  confirmDeleteUser() {
+    if (!this.userToDelete) return;
+    this.usersSvc.disableUser(this.userToDelete._id).subscribe(() => {
+      this.loadUsers();
+      this.closeModal();
+    });
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.modalMessage = '';
+    this.userToDelete = null;
   }
 }

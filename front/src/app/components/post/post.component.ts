@@ -131,32 +131,49 @@ export class PostComponent {
     this.loadComments();
   }
 
+  commentToDelete: string | null = null;
   eliminateComment(commentId: string) {
+    this.commentToDelete = commentId;
+    this.modalMessage = '¿Seguro que deseas eliminar este comentario?';
+    this.showModal = true;
+  }
+  confirmDeleteComment() {
+    if (!this.commentToDelete) return;
     const user = this.userSignal();
     const username = user?.username || '';
     const role = this.isAdmin ? 'admin' : 'user';
-    this.postService.deleteComment(this.post._id, commentId, username, role)
+    this.postService.deleteComment(this.post._id, this.commentToDelete, username, role)
       .subscribe(() => {
-        this.comments = this.comments.filter(c => c._id !== commentId);
+        this.comments = this.comments.filter(c => c._id !== this.commentToDelete);
         this.totalComments--;
+        this.closeModal();
+        this.commentToDelete = null;
       }, err => {
         this.modalMessage = 'Error al eliminar comentario.';
-        this.showModal = true;
+        this.commentToDelete = null;
       });
   }
-  closeModal() { this.showModal = false; }
+  closeModal() { this.showModal = false; this.commentToDelete = null; }
 
   // — Soft-delete de post —
+  postToDelete: boolean = false;
   async eliminatePost(): Promise<void> {
-    if (!confirm('¿Eliminar este post?')) return;
+    this.postToDelete = true;
+    this.modalMessage = '¿Seguro que deseas eliminar este post?';
+    this.showModal = true;
+  }
+  async confirmDeletePost(): Promise<void> {
     const user = this.userSignal();
     const username = user?.username || '';
     const role = this.isAdmin ? 'admin' : 'user';
     try {
       await firstValueFrom(this.postService.softDeletePost(this.post._id, username, role));
       this.postDeleted.emit(this.post._id);
+      this.closeModal();
+      this.postToDelete = false;
     } catch (err) {
-      console.error('Error al eliminar post:', err);
+      this.modalMessage = 'Error al eliminar post.';
+      this.postToDelete = false;
     }
   }
 }

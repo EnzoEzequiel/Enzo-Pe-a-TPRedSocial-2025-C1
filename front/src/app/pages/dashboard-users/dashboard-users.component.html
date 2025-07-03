@@ -2,7 +2,8 @@
 <div class="min-h-screen bg-white text-gray-800">
 
   <!-- Header Navbar (igual que Estadísticas) -->
-  <header class="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center shadow-sm sticky top-0 z-40">
+  <header
+    class="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center shadow-sm sticky top-0 z-40">
     <h1 class="text-xl font-bold text-green-600">Panel de Usuarios</h1>
     <div class="flex gap-4">
       <a routerLink="/home" class="text-green-600 hover:underline">Inicio</a>
@@ -13,8 +14,7 @@
   <div class="max-w-5xl mx-auto p-6 space-y-8">
 
     <!-- Toggle Formularios -->
-    <button (click)="showForm = !showForm"
-            class="flex items-center text-gray-600 hover:text-green-600 transition">
+    <button (click)="showForm = !showForm" class="flex items-center text-gray-600 hover:text-green-600 transition">
       <span class="material-icons mr-1">
         {{ showForm ? 'expand_less' : 'expand_more' }}
       </span>
@@ -22,10 +22,8 @@
     </button>
 
     <!-- Form Crear Usuario -->
-    <form *ngIf="showForm"
-          [formGroup]="form"
-          (ngSubmit)="onSubmit()"
-          class="bg-white p-8 rounded-xl shadow-lg grid grid-cols-1 md:grid-cols-2 gap-6">
+    <form *ngIf="showForm" [formGroup]="form" (ngSubmit)="onSubmit()"
+      class="bg-white p-8 rounded-xl shadow-lg grid grid-cols-1 md:grid-cols-2 gap-6">
       <h2 class="col-span-full text-2xl font-bold text-green-600">Crear Nuevo Usuario</h2>
 
       <div>
@@ -76,8 +74,7 @@
         </small>
       </div>
 
-      <button type="submit"
-        [disabled]="form.invalid"
+      <button type="submit" [disabled]="form.invalid"
         class="col-span-full py-3 bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-700 transition">
         <span class="material-icons align-middle mr-1">person_add</span>
         Crear Usuario
@@ -85,8 +82,7 @@
     </form>
 
     <!-- Toggle Listado -->
-    <button (click)="showList = !showList"
-            class="flex items-center text-gray-600 hover:text-green-600 transition">
+    <button (click)="showList = !showList" class="flex items-center text-gray-600 hover:text-green-600 transition">
       <span class="material-icons mr-1">
         {{ showList ? 'expand_less' : 'expand_more' }}
       </span>
@@ -103,11 +99,9 @@
         <div *ngIf="activeUsers.length">
           <h3 class="text-lg font-semibold mb-2">Activos</h3>
           <div class="space-y-2">
-            <div *ngFor="let u of activeUsers"
-              class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div *ngFor="let u of activeUsers" class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div class="flex items-center space-x-3">
-                <img *ngIf="u.profileImage" [src]="u.profileImage"
-                  class="w-10 h-10 rounded-full border" alt="Foto" />
+                <img *ngIf="u.profileImage" [src]="u.profileImage" class="w-10 h-10 rounded-full border" alt="Foto" />
                 <div>
                   <p class="font-medium">{{ u.firstName }} {{ u.lastName }}</p>
                   <p class="text-sm text-gray-500">{{ u.email }}</p>
@@ -122,6 +116,12 @@
                   class="py-1 px-3 rounded-full border-2 border-red-500 text-red-500 hover:bg-red-50 transition">
                   <span class="material-icons align-middle">delete</span>
                 </button>
+                <app-modal *ngIf="showModal" [message]="modalMessage" (close)="closeModal()">
+                  <div class="flex gap-2 mt-4">
+                    <button (click)="confirmDeleteUser()"
+                      class="bg-red-600 text-white px-4 py-2 rounded">Aceptar</button>
+                  </div>
+                </app-modal>
               </div>
             </div>
           </div>
@@ -134,8 +134,7 @@
             <div *ngFor="let u of inactiveUsers"
               class="flex items-center justify-between p-4 bg-gray-50 rounded-lg opacity-75">
               <div class="flex items-center space-x-3">
-                <img *ngIf="u.profileImage" [src]="u.profileImage"
-                  class="w-10 h-10 rounded-full border" alt="Foto" />
+                <img *ngIf="u.profileImage" [src]="u.profileImage" class="w-10 h-10 rounded-full border" alt="Foto" />
                 <div>
                   <p class="font-medium line-through">{{ u.firstName }} {{ u.lastName }}</p>
                   <p class="text-sm text-gray-500">{{ u.email }}</p>

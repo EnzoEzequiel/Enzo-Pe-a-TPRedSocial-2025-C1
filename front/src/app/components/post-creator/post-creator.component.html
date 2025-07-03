@@ -22,16 +22,11 @@
           <input type="file" accept="image/*" hidden (change)="onImageSelected($event)" />
         </label>
 
-        <!-- type="button" evita recarga -->
+
         <button type="button" (click)="post()" [disabled]="!canPost"
           class="bg-blue-500 text-white font-semibold px-4 py-1 rounded-full hover:bg-blue-600 disabled:opacity-50">
           Publicar
         </button>
-      </div>
-
-      <!-- Mensaje de validación -->
-      <div *ngIf="postText.trim() === '' && triedToPost" class="text-red-500 text-sm mt-1">
-        El contenido es obligatorio.
       </div>
     </div>
   </div>

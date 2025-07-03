@@ -6,14 +6,22 @@
 
     <div class="relative hidden md:block w-72">
       <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 pointer-events-none">
-        <!-- SVG de lupa -->
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <circle cx="11" cy="11" r="8" stroke="currentColor" />
           <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" />
         </svg>
       </span>
       <input type="text" placeholder="Buscar en Zompix"
-        class="bg-gray-300 pl-10 pr-4 py-1.5 rounded-full w-full text-sm text-gray-800 placeholder-gray-500 focus:outline-none" />
+        class="bg-gray-300 pl-10 pr-4 py-1.5 rounded-full w-full text-sm text-gray-800 placeholder-gray-500 focus:outline-none"
+        [(ngModel)]="searchTerm" (input)="onSearchChange(searchTerm)" autocomplete="off" />
+      <div *ngIf="showDropdown" class="absolute left-0 right-0 mt-1 bg-white border border-gray-300 rounded shadow z-20 max-h-60 overflow-auto">
+        <div *ngIf="searching" class="px-4 py-2 text-gray-500">Buscando...</div>
+        <div *ngFor="let user of searchResults" (click)="selectUser(user)" class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center">
+          <img [src]="user.profileImage || 'assets/images/default-avatar.png'" class="w-6 h-6 rounded-full mr-2" />
+          <span>{{ user.firstName }} {{ user.lastName }} <span class="text-gray-400">&#64;{{ user.username }}</span></span>
+        </div>
+        <div *ngIf="!searching && searchResults.length === 0" class="px-4 py-2 text-gray-500">Sin resultados</div>
+      </div>
     </div>
   </div>
   <nav class="flex gap-6 items-center relative">
